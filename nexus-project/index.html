@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS TRADE — AI Trading Platform</title>
+
+<!-- ── Fonts ───────────────────────────────────────────── -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+<!-- ── Third-party libs ─────────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+<!-- ── Styles ──────────────────────────────────────────── -->
+<link rel="stylesheet" href="src/css/main.css">
+</head>
+<body>
+
+<!-- ============================================================
+     NEWS TICKER
+     ============================================================ -->
+<div id="news-ticker">
+  <div class="nt-label" id="ntLabel">أخبار</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="nt-track" id="ntTrack">
+      <span class="nt-item">Fed يُبقي على أسعار الفائدة — السوق ينتظر بيانات التضخم غداً</span>
+      <span class="nt-item">EUR/USD يختبر مقاومة 1.0870 وسط ترقب لبيانات PMI الأوروبية</span>
+      <span class="nt-item">الذهب يتخطى 2950 دولار للأوقية في موجة طلب قوية</span>
+      <span class="nt-item">بيتكوين يرتفع 3.2% بعد بيانات ETF الإيجابية</span>
+      <span class="nt-item">OPEC+ تخفض إنتاجها مجدداً — النفط يرتفع 2.4%</span>
+      <span class="nt-item">Bank of Japan يُلمح لرفع الفائدة في الاجتماع القادم</span>
+      <span class="nt-item">تقرير NFP أمريكي يُظهر إضافة 248K وظيفة — أفضل من التوقعات</span>
+      <!-- duplicate for seamless scroll -->
+      <span class="nt-item">Fed يُبقي على أسعار الفائدة — السوق ينتظر بيانات التضخم غداً</span>
+      <span class="nt-item">EUR/USD يختبر مقاومة 1.0870 وسط ترقب لبيانات PMI الأوروبية</span>
+      <span class="nt-item">الذهب يتخطى 2950 دولار للأوقية في موجة طلب قوية</span>
+      <span class="nt-item">بيتكوين يرتفع 3.2% بعد بيانات ETF الإيجابية</span>
+      <span class="nt-item">OPEC+ تخفض إنتاجها مجدداً — النفط يرتفع 2.4%</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOP BAR
+     ============================================================ -->
+<div id="topbar">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="logo" onclick="switchPage('dashboard')">
+      <div class="logo-mark">NEXUS</div>
+      <div class="logo-tag">AI TRADING v2.0</div>
+    </div>
+    <div style="width:1px;height:28px;background:var(--border2)"></div>
+    <div class="tb-prices" id="tbPrices">
+      <div class="tb-price-item" onclick="setActivePair('EUR/USD')"><span class="tb-sym">EUR/USD</span><span class="tb-val up" id="tb0">1.08432</span></div>
+      <div class="tb-price-item" onclick="setActivePair('GBP/USD')"><span class="tb-sym">GBP/USD</span><span class="tb-val dn" id="tb1">1.27184</span></div>
+      <div class="tb-price-item" onclick="setActivePair('XAU/USD')"><span class="tb-sym">XAU/USD</span><span class="tb-val up" id="tb2">2944.20</span></div>
+      <div class="tb-price-item" onclick="setActivePair('BTC/USD')"><span class="tb-sym">BTC/USD</span><span class="tb-val up" id="tb3">84,120</span></div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="status-dot"></div>
+    <span style="font-size:10px;color:var(--green);font-family:var(--font-mono)" id="liveLabel">مباشر</span>
+    <div style="width:1px;height:20px;background:var(--border)"></div>
+    <button class="tb-lang-btn active" id="btnAR" onclick="setLang('ar')">عربي</button>
+    <button class="tb-lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN NAV
+     ============================================================ -->
+<div id="main-nav">
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" onclick="switchPage('dashboard',this)" data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</button>
+    <button class="nav-tab" onclick="switchPage('analysis',this)" data-ar="تحليل AI" data-en="AI Analysis">تحليل AI</button>
+    <button class="nav-tab" onclick="switchPage('portfolio',this)" data-ar="المحفظة" data-en="Portfolio">المحفظة</button>
+    <button class="nav-tab" onclick="switchPage('performance',this)" data-ar="الأداء" data-en="Performance">الأداء</button>
+    <button class="nav-tab" onclick="switchPage('risk',this)" data-ar="إدارة المخاطر" data-en="Risk Mgmt">إدارة المخاطر</button>
+    <button class="nav-tab" onclick="switchPage('news',this)" data-ar="الأخبار" data-en="News">الأخبار</button>
+    <button class="nav-tab" onclick="switchPage('calendar',this)" data-ar="الأجندة الاقتصادية" data-en="Economic Calendar">الأجندة</button>
+    <button class="nav-tab" onclick="switchPage('settings',this)" data-ar="الإعدادات" data-en="Settings">الإعدادات</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD PAGE  (contains sidebar-left + center + sidebar-right)
+     ============================================================ -->
+<div id="page-dashboard" style="display:flex;height:calc(100vh - 106px);overflow:hidden;position:relative;z-index:1">
+
+  <!-- ── Left Sidebar (Markets + Portfolio mini) ── -->
+  <div id="sidebar-left">
+    <!-- Portfolio mini -->
+    <div class="sl-section">
+      <div class="sl-section-hdr" onclick="toggleSection('portMini')">
+        <div class="sl-section-title">💼 <span data-ar="المحفظة" data-en="Portfolio">المحفظة</span></div>
+        <div class="sl-section-toggle" id="portMiniArrow">▼</div>
+      </div>
+      <div class="sl-section-body" id="portMiniBody" style="max-height:200px">
+        <div class="port-mini">
+          <div class="pm-bal-label" data-ar="إجمالي الرصيد" data-en="TOTAL BALANCE">إجمالي الرصيد</div>
+          <div class="pm-balance" id="pmBalance">$28,470.55</div>
+          <div class="pm-pnl up" id="pmPnl">+$1,240 (+4.6%)</div>
+          <div class="pm-stats-grid">
+            <div class="pm-stat"><div class="pm-stat-label" data-ar="هامش حر" data-en="FREE MARGIN">هامش حر</div><div class="pm-stat-val" style="color:var(--green)">$20,050</div></div>
+            <div class="pm-stat"><div class="pm-stat-label" data-ar="فوز%" data-en="WIN%">فوز%</div><div class="pm-stat-val" style="color:var(--gold)">68.4%</div></div>
+            <div class="pm-stat"><div class="pm-stat-label" data-ar="صفقات" data-en="TRADES">صفقات</div><div class="pm-stat-val">5</div></div>
+            <div class="pm-stat"><div class="pm-stat-label" data-ar="رافعة" data-en="LEVERAGE">رافعة</div><div class="pm-stat-val" style="color:var(--cyan)">1:100</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Markets watchlist with dropdowns -->
+    <div class="sl-section" style="flex:1;overflow-y:auto">
+      <div class="sl-section-hdr">
+        <div class="sl-section-title">📊 <span data-ar="الأسواق" data-en="Markets">الأسواق</span></div>
+      </div>
+      <!-- FOREX -->
+      <div class="market-group">
+        <div class="market-group-hdr" onclick="toggleMarket('forex')">
+          <span class="mg-name" data-ar="فوركس" data-en="FOREX">فوركس</span>
+          <div style="display:flex;align-items:center;gap:5px"><span class="mg-count">8</span><span class="mg-arrow open" id="arr-forex">▶</span></div>
+        </div>
+        <div class="market-group-body open" id="mg-forex">
+          <div class="pair-row active" onclick="setPair('EUR/USD',1.08432,this)"><div class="pr-left"><div class="pr-flag">🇪🇺</div><div><div class="pr-name">EUR/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw0">1.08432</div><div class="pr-chg up">+0.12%</div></div></div>
+          <div class="pair-row" onclick="setPair('GBP/USD',1.27184,this)"><div class="pr-left"><div class="pr-flag">🇬🇧</div><div><div class="pr-name">GBP/USD</div></div></div><div class="pr-right"><div class="pr-price dn" id="pw1">1.27184</div><div class="pr-chg dn">-0.08%</div></div></div>
+          <div class="pair-row" onclick="setPair('USD/JPY',149.820,this)"><div class="pr-left"><div class="pr-flag">🇯🇵</div><div><div class="pr-name">USD/JPY</div></div></div><div class="pr-right"><div class="pr-price up" id="pw2">149.820</div><div class="pr-chg up">+0.31%</div></div></div>
+          <div class="pair-row" onclick="setPair('USD/CHF',0.88920,this)"><div class="pr-left"><div class="pr-flag">🇨🇭</div><div><div class="pr-name">USD/CHF</div></div></div><div class="pr-right"><div class="pr-price dn" id="pw3">0.88920</div><div class="pr-chg dn">-0.05%</div></div></div>
+          <div class="pair-row" onclick="setPair('AUD/USD',0.65441,this)"><div class="pr-left"><div class="pr-flag">🇦🇺</div><div><div class="pr-name">AUD/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw4">0.65441</div><div class="pr-chg up">+0.22%</div></div></div>
+          <div class="pair-row" onclick="setPair('USD/CAD',1.36280,this)"><div class="pr-left"><div class="pr-flag">🇨🇦</div><div><div class="pr-name">USD/CAD</div></div></div><div class="pr-right"><div class="pr-price dn" id="pw5">1.36280</div><div class="pr-chg dn">-0.11%</div></div></div>
+          <div class="pair-row" onclick="setPair('NZD/USD',0.60180,this)"><div class="pr-left"><div class="pr-flag">🇳🇿</div><div><div class="pr-name">NZD/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw6">0.60180</div><div class="pr-chg up">+0.17%</div></div></div>
+          <div class="pair-row" onclick="setPair('EUR/GBP',0.85310,this)"><div class="pr-left"><div class="pr-flag">🇪🇺</div><div><div class="pr-name">EUR/GBP</div></div></div><div class="pr-right"><div class="pr-price up" id="pw7">0.85310</div><div class="pr-chg up">+0.09%</div></div></div>
+        </div>
+      </div>
+      <!-- METALS -->
+      <div class="market-group">
+        <div class="market-group-hdr" onclick="toggleMarket('metals')">
+          <span class="mg-name" data-ar="معادن" data-en="METALS">معادن</span>
+          <div style="display:flex;align-items:center;gap:5px"><span class="mg-count">3</span><span class="mg-arrow" id="arr-metals">▶</span></div>
+        </div>
+        <div class="market-group-body" id="mg-metals">
+          <div class="pair-row" onclick="setPair('XAU/USD',2944.20,this)"><div class="pr-left"><div class="pr-flag">🥇</div><div><div class="pr-name">XAU/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw8">2944.20</div><div class="pr-chg up">+0.92%</div></div></div>
+          <div class="pair-row" onclick="setPair('XAG/USD',32.44,this)"><div class="pr-left"><div class="pr-flag">🥈</div><div><div class="pr-name">XAG/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw9">32.44</div><div class="pr-chg up">+1.15%</div></div></div>
+          <div class="pair-row" onclick="setPair('XPT/USD',985.60,this)"><div class="pr-left"><div class="pr-flag">⚪</div><div><div class="pr-name">XPT/USD</div></div></div><div class="pr-right"><div class="pr-price dn" id="pw10">985.60</div><div class="pr-chg dn">-0.34%</div></div></div>
+        </div>
+      </div>
+      <!-- CRYPTO -->
+      <div class="market-group">
+        <div class="market-group-hdr" onclick="toggleMarket('crypto')">
+          <span class="mg-name" data-ar="كريبتو" data-en="CRYPTO">كريبتو</span>
+          <div style="display:flex;align-items:center;gap:5px"><span class="mg-count">4</span><span class="mg-arrow" id="arr-crypto">▶</span></div>
+        </div>
+        <div class="market-group-body" id="mg-crypto">
+          <div class="pair-row" onclick="setPair('BTC/USD',84120,this)"><div class="pr-left"><div class="pr-flag">₿</div><div><div class="pr-name">BTC/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw11">84,120</div><div class="pr-chg up">+2.87%</div></div></div>
+          <div class="pair-row" onclick="setPair('ETH/USD',3280,this)"><div class="pr-left"><div class="pr-flag">Ξ</div><div><div class="pr-name">ETH/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw12">3,280</div><div class="pr-chg up">+1.44%</div></div></div>
+          <div class="pair-row" onclick="setPair('SOL/USD',142.5,this)"><div class="pr-left"><div class="pr-flag">◎</div><div><div class="pr-name">SOL/USD</div></div></div><div class="pr-right"><div class="pr-price up" id="pw13">142.50</div><div class="pr-chg up">+3.21%</div></div></div>
+          <div class="pair-row" onclick="setPair('XRP/USD',0.5840,this)"><div class="pr-left"><div class="pr-flag">✕</div><div><div class="pr-name">XRP/USD</div></div></div><div class="pr-right"><div class="pr-price dn" id="pw14">0.5840</div><div class="pr-chg dn">-1.08%</div></div></div>
+        </div>
+      </div>
+      <!-- INDICES -->
+      <div class="market-group">
+        <div class="market-group-hdr" onclick="toggleMarket('indices')">
+          <span class="mg-name" data-ar="مؤشرات" data-en="INDICES">مؤشرات</span>
+          <div style="display:flex;align-items:center;gap:5px"><span class="mg-count">3</span><span class="mg-arrow" id="arr-indices">▶</span></div>
+        </div>
+        <div class="market-group-body" id="mg-indices">
+          <div class="pair-row" onclick="setPair('SPX500',5842,this)"><div class="pr-left"><div class="pr-flag">🇺🇸</div><div><div class="pr-name">SPX 500</div></div></div><div class="pr-right"><div class="pr-price up" id="pw15">5,842</div><div class="pr-chg up">+1.24%</div></div></div>
+          <div class="pair-row" onclick="setPair('NAS100',20140,this)"><div class="pr-left"><div class="pr-flag">💻</div><div><div class="pr-name">NAS 100</div></div></div><div class="pr-right"><div class="pr-price up" id="pw16">20,140</div><div class="pr-chg up">+1.88%</div></div></div>
+          <div class="pair-row" onclick="setPair('GER40',18240,this)"><div class="pr-left"><div class="pr-flag">🇩🇪</div><div><div class="pr-name">GER 40</div></div></div><div class="pr-right"><div class="pr-price dn" id="pw17">18,240</div><div class="pr-chg dn">-0.42%</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /sidebar-left -->
+
+  <!-- ── Center (Chart) ── -->
+  <div id="center">
+    <!-- Chart header toolbar -->
+    <div class="chart-header">
+      <div class="ch-main">
+        <div class="ch-pair" id="chPair">EUR/USD</div>
+        <div><div class="ch-price up" id="chPrice">1.08432</div><div class="ch-change up" id="chChange">▲ +0.12%</div></div>
+        <div class="ch-ohlc">
+          <div class="ch-ohlc-item"><span class="ch-ohlc-l">O</span><span class="ch-ohlc-v" id="chO">—</span></div>
+          <div class="ch-ohlc-item"><span class="ch-ohlc-l">H</span><span class="ch-ohlc-v up" id="chH">—</span></div>
+          <div class="ch-ohlc-item"><span class="ch-ohlc-l">L</span><span class="ch-ohlc-v dn" id="chL">—</span></div>
+          <div class="ch-ohlc-item"><span class="ch-ohlc-l">Vol</span><span class="ch-ohlc-v" id="chV">—</span></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+        <div class="chart-type-btns">
+          <button class="ct-btn active" onclick="CH_setType('candle',this)" title="Candle">🕯</button>
+          <button class="ct-btn" onclick="CH_setType('hollow',this)" title="Hollow">⬡</button>
+          <button class="ct-btn" onclick="CH_setType('bar',this)" title="Bar">▐</button>
+          <button class="ct-btn" onclick="CH_setType('line',this)" title="Line">∿</button>
+          <button class="ct-btn" onclick="CH_setType('area',this)" title="Area">◭</button>
+          <button class="ct-btn" style="font-size:9px" onclick="CH_setType('heikin',this)" title="Heikin-Ashi">HA</button>
+        </div>
+        <div style="width:1px;height:14px;background:var(--border)"></div>
+        <div class="tf-btns">
+          <button class="tf-btn" onclick="CH_setTF(1,this)">1m</button>
+          <button class="tf-btn" onclick="CH_setTF(5,this)">5m</button>
+          <button class="tf-btn active" onclick="CH_setTF(15,this)">15m</button>
+          <button class="tf-btn" onclick="CH_setTF(60,this)">1H</button>
+          <button class="tf-btn" onclick="CH_setTF(240,this)">4H</button>
+          <button class="tf-btn" onclick="CH_setTF(1440,this)">1D</button>
+        </div>
+        <div style="width:1px;height:14px;background:var(--border)"></div>
+        <div class="ind-dropdown">
+          <button class="ct-btn" style="width:auto;padding:0 7px;font-size:9px;font-family:var(--font-hud)" onclick="document.getElementById('indPanel').classList.toggle('open')" id="indBtn">IND ▾</button>
+          <div class="ind-panel" id="indPanel">
+            <div style="font-size:9px;letter-spacing:1px;color:var(--text3);font-family:var(--font-hud);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(0,212,255,.1)">INDICATORS</div>
+            <div id="indList"></div>
+          </div>
+        </div>
+        <div class="tf-btns">
+          <button class="tf-btn act" id="subRSI" onclick="CH_setSub('rsi',this)">RSI</button>
+          <button class="tf-btn" id="subMACD" onclick="CH_setSub('macd',this)">MACD</button>
+          <button class="tf-btn" id="subSTOCH" onclick="CH_setSub('stoch',this)">Stoch</button>
+        </div>
+        <div style="width:1px;height:14px;background:var(--border)"></div>
+        <div class="chart-tools">
+          <div class="tool-btn act" id="toolCursor" onclick="CH_setTool('cursor',this)" title="Pan">↖</div>
+          <div class="tool-btn" id="toolHLine" onclick="CH_setTool('hline',this)" title="H-Line">━</div>
+          <div class="tool-btn" id="toolTrend" onclick="CH_setTool('trend',this)" title="Trend">╱</div>
+          <div class="tool-btn" id="toolFib" onclick="CH_setTool('fib',this)" title="Fibonacci">ϕ</div>
+          <div class="tool-btn" id="toolRect" onclick="CH_setTool('rect',this)" title="Rectangle">▭</div>
+          <div class="tool-sep"></div>
+          <div class="tool-btn" onclick="CH_clearDrawings()" style="color:var(--red)">🗑</div>
+        </div>
+        <div style="width:1px;height:14px;background:var(--border)"></div>
+        <div class="tool-btn" onclick="CH_zoom(0.75)">+</div>
+        <div class="tool-btn" onclick="CH_zoom(1.33)">−</div>
+        <div class="tool-btn" style="font-size:9px;width:auto;padding:0 5px" onclick="CH_resetView()">⊡</div>
+        <div class="tool-btn" onclick="CH_screenshot()">📷</div>
+      </div>
+    </div>
+
+    <!-- Chart canvas area -->
+    <div class="chart-wrap">
+      <div id="mainChartArea">
+        <canvas id="tvCanvas"></canvas>
+      </div>
+      <div class="sub-chart-panel">
+        <canvas id="subCanvas"></canvas>
+        <div class="sub-chart-label" id="subLabel">RSI(14)</div>
+      </div>
+    </div>
+
+    <!-- Open Positions Panel (below chart) -->
+    <div class="open-positions-panel">
+      <div class="opp-header" onclick="toggleOPP()">
+        <div class="opp-title"><span data-ar="الصفقات المفتوحة" data-en="Open Positions">الصفقات المفتوحة</span> <span class="opp-badge" id="oppCount">5</span></div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span style="font-size:10px;font-family:var(--font-mono)"><span data-ar="إجمالي ر/خ:" data-en="Total P&L:">إجمالي ر/خ:</span> <span style="color:var(--green)">+$1,240.30</span></span>
+          <span style="font-size:10px;color:var(--text4)">▲</span>
+        </div>
+      </div>
+      <div class="opp-table" id="oppTable">
+        <div class="opp-col-hdr">
+          <span data-ar="الزوج" data-en="Pair">الزوج</span>
+          <span data-ar="اتجاه" data-en="Dir">اتجاه</span>
+          <span data-ar="حجم" data-en="Vol">حجم</span>
+          <span data-ar="الدخول" data-en="Entry">الدخول</span>
+          <span data-ar="الحالي" data-en="Current">الحالي</span>
+          <span>SL</span><span>TP</span>
+          <span data-ar="ر/خ" data-en="P&L">ر/خ</span>
+        </div>
+        <div id="oppRows"></div>
+      </div>
+    </div>
+  </div><!-- /center -->
+
+  <!-- ── Right Sidebar (Trade / Signals / Bot) ── -->
+  <div id="sidebar-right">
+    <!-- Portfolio summary top -->
+    <div style="padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg4);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <div style="font-family:var(--font-hud);font-size:16px;font-weight:700;color:var(--cyan)">$28,493.60</div>
+      <div style="font-size:11px;color:var(--green);font-family:var(--font-mono)">(4.6%+) $1,248+</div>
+    </div>
+    <div style="padding:5px 12px;border-bottom:1px solid var(--border);background:var(--bg4);display:flex;justify-content:space-between;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:14px;font-size:10px">
+        <span style="color:var(--text3)">الأسهم</span>
+        <span style="font-family:var(--font-mono);color:var(--text)">$20,050</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:10px">
+        <span style="color:var(--gold);font-family:var(--font-mono)">68.4%</span>
+        <span style="color:var(--text3)">1:100</span>
+        <span style="color:var(--text3)">5</span>
+      </div>
+    </div>
+
+    <div class="rp-tabs">
+      <button class="rp-tab active" onclick="switchRT('signals',this)" data-ar="إشارات" data-en="Signals">إشارات</button>
+      <button class="rp-tab" onclick="switchRT('trade',this)" data-ar="تنفيذ" data-en="Trade">تنفيذ</button>
+      <button class="rp-tab" onclick="switchRT('bot',this)" data-ar="بوت" data-en="Bot">بوت</button>
+    </div>
+
+    <!-- SIGNALS tab -->
+    <div class="rp-body" id="rt-signals">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:9px;letter-spacing:1.5px;color:var(--text3);font-family:var(--font-hud)">إشارات AI — مباشر</span>
+        <button onclick="refreshSigs()" style="background:var(--cyan3);border:1px solid var(--border2);color:var(--cyan);padding:3px 9px;border-radius:3px;font-size:10px;cursor:pointer;font-family:var(--font-ui)">🔄</button>
+      </div>
+      <div id="sigContainer"></div>
+    </div>
+
+    <!-- TRADE tab -->
+    <div class="rp-body" id="rt-trade" style="display:none">
+      <div class="trade-mode">
+        <button class="trade-mode-btn tmbuy act" id="btnBuy" onclick="setMode('buy')">▲ <span data-ar="شراء" data-en="BUY">شراء</span></button>
+        <button class="trade-mode-btn tmsell" id="btnSell" onclick="setMode('sell')">▼ <span data-ar="بيع" data-en="SELL">بيع</span></button>
+      </div>
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:5px;padding:6px 8px;text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--cyan);text-shadow:var(--glow);margin-bottom:8px;letter-spacing:1px" id="tradePriceLive">1.08432</div>
+      <!-- Lot Calculator -->
+      <div style="background:rgba(0,212,255,.06);border:1px solid var(--border2);border-radius:6px;padding:9px;margin-bottom:10px">
+        <div style="font-size:9px;letter-spacing:1.2px;color:var(--cyan);font-family:var(--font-hud);margin-bottom:8px">🧮 <span data-ar="حاسبة الحجم" data-en="LOT CALCULATOR">حاسبة الحجم</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:7px">
+          <div><div style="font-size:8px;color:var(--text3);margin-bottom:3px;font-family:var(--font-hud)" data-ar="المخاطرة%" data-en="RISK%">المخاطرة%</div><input id="lcRisk" type="number" value="2" min="0.1" max="20" step="0.1" style="width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:5px 7px;border-radius:4px;font-family:var(--font-mono);font-size:12px;direction:ltr" oninput="calcLot()"></div>
+          <div><div style="font-size:8px;color:var(--text3);margin-bottom:3px;font-family:var(--font-hud)">SL (pips)</div><input id="lcSL" type="number" value="20" min="1" step="1" style="width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:5px 7px;border-radius:4px;font-family:var(--font-mono);font-size:12px;direction:ltr" oninput="calcLot()"></div>
+        </div>
+        <div style="background:var(--bg3);border-radius:5px;padding:7px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div><div style="font-size:8px;color:var(--text3);font-family:var(--font-hud)" data-ar="الحجم المقترح" data-en="SUGGESTED LOT">الحجم المقترح</div><div style="font-size:14px;font-weight:700;color:var(--gold);font-family:var(--font-mono)" id="lcResult">0.22</div></div>
+          <div><div style="font-size:8px;color:var(--text3);font-family:var(--font-hud)" data-ar="المخاطرة $" data-en="RISK $">المخاطرة $</div><div style="font-size:14px;font-weight:700;color:var(--red);font-family:var(--font-mono)" id="lcRiskDollar">$569</div></div>
+        </div>
+      </div>
+      <div class="f-grp"><div class="f-lbl"><span data-ar="الحجم (لوت)" data-en="Volume (Lot)">الحجم (لوت)</span></div><input class="f-inp" type="number" id="fVol" value="0.10" step="0.01" min="0.01" oninput="calcRisk()"></div>
+      <div class="f-grp"><div class="f-lbl"><span data-ar="الرافعة" data-en="Leverage">الرافعة</span></div><div class="lev-grid"><button class="lev-btn act" onclick="setLev('1:10',this)">1:10</button><button class="lev-btn" onclick="setLev('1:50',this)">1:50</button><button class="lev-btn" onclick="setLev('1:100',this)">1:100</button><button class="lev-btn" onclick="setLev('1:200',this)">1:200</button><button class="lev-btn" onclick="setLev('1:500',this)">1:500</button></div></div>
+      <div class="f-grp"><div class="f-lbl"><span data-ar="وقف الخسارة" data-en="Stop Loss">وقف الخسارة</span></div><input class="f-inp" type="number" id="fSL" step="0.0001" oninput="calcRisk()"></div>
+      <div class="f-grp"><div class="f-lbl"><span data-ar="جني الأرباح" data-en="Take Profit">جني الأرباح</span></div><input class="f-inp" type="number" id="fTP" step="0.0001" oninput="calcRisk()"></div>
+      <div class="risk-box">
+        <div class="rb-row"><span class="rb-k" data-ar="خسارة محتملة" data-en="Potential Loss">خسارة محتملة</span><span class="rb-v dn" id="rbRisk">-$84.00</span></div>
+        <div class="rb-row"><span class="rb-k" data-ar="ربح محتمل" data-en="Potential Profit">ربح محتمل</span><span class="rb-v up" id="rbReward">+$126.00</span></div>
+        <div class="rb-row"><span class="rb-k">R:R</span><span class="rb-v" id="rbRR" style="color:var(--gold)">1:1.5</span></div>
+        <div class="rb-row"><span class="rb-k" data-ar="الهامش" data-en="Margin">الهامش</span><span class="rb-v" id="rbMargin" style="color:var(--cyan)">$108.43</span></div>
+      </div>
+      <button class="exec-btn exec-buy" id="execBtn" onclick="execTrade()">▲ <span id="execLabel" data-ar="تنفيذ شراء" data-en="EXECUTE BUY">تنفيذ شراء</span></button>
+    </div>
+
+    <!-- BOT tab (inline - full content from bot.js renders here) -->
+    <div class="rp-body" id="rt-bot" style="display:none">
+      <div id="bot-panel-content"></div>
+    </div>
+  </div><!-- /sidebar-right -->
+
+</div><!-- /page-dashboard -->
+
+<!-- All other pages (analysis, portfolio, performance, risk, news, calendar, settings)
+     are loaded from the full build or remain inline for now -->
+<div id="page-analysis" class="full-page"></div>
+<div id="page-portfolio" class="full-page"></div>
+<div id="page-performance" class="full-page"></div>
+<div id="page-risk" class="full-page"></div>
+<div id="page-news" class="full-page"></div>
+<div id="page-calendar" class="full-page"></div>
+<div id="page-settings" class="full-page"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     SCRIPTS — load in dependency order
+     ============================================================ -->
+<script src="src/js/core/state.js"></script>
+<script src="src/js/core/toast.js"></script>
+<script src="src/js/chart/chart.js"></script>
+<script src="src/js/core/positions.js"></script>
+<script src="src/js/core/ticker.js"></script>
+<script src="src/js/core/trade.js"></script>
+<script src="src/js/core/navigation.js"></script>
+<script src="src/js/core/riskCalc.js"></script>
+<script src="src/js/core/alerts.js"></script>
+<script src="src/js/core/clock.js"></script>
+<script src="src/js/ai/signals.js"></script>
+<script src="src/js/bot/bot.js"></script>
+<script src="src/js/ai/analysis.js"></script>
+<script src="src/js/pages/portfolio.js"></script>
+<script src="src/js/pages/performance.js"></script>
+<script src="src/js/pages/calendar.js"></script>
+<script src="src/js/pages/settings.js"></script>
+
+<!-- ── Init ─────────────────────────────────────────────── -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  CH_gen('EUR/USD');
+  setTimeout(() => { CH_bindEvents(); CH_initIndPanel(); requestAnimationFrame(CH_frame); }, 80);
+  setInterval(CH_liveTick, 1500);
+  buildTradeHistory();
+  renderOPP();
+  renderSignals();
+  calcRisk();
+  calcLot();
+  startClock();
+  const cp = S.prices['EUR/USD'];
+  document.getElementById('fSL').value = (cp.p - 0.005).toFixed(5);
+  document.getElementById('fTP').value = (cp.p + 0.0075).toFixed(5);
+  setInterval(() => { tickPrices(); renderOPP(); }, 2000);
+  setInterval(CH_liveTick, 1500);
+  setInterval(() => checkAlerts(S.pair), 15000);
+  setInterval(() => {
+    const b = 28470 + ((Math.random() - 0.4) * 50);
+    const el = document.getElementById('pmBalance');
+    if (el) el.textContent = '$' + b.toFixed(2);
+  }, 5000);
+  window.addEventListener('resize', () => { CH_dirty = true; });
+  document.getElementById('arr-forex')?.classList.add('open');
+});
+</script>
+</body>
+</html>

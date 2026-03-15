@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>NEXUS TRADE — دليل البدء</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f1a;color:#e0f4ff;font-family:'Segoe UI',Arial,sans-serif;direction:rtl;padding:30px;min-height:100vh}
+h1{font-size:28px;color:#00d4ff;margin-bottom:6px;letter-spacing:1px}
+.subtitle{color:#5a8299;font-size:14px;margin-bottom:30px}
+.card{background:#111e2a;border:1px solid rgba(0,212,255,.2);border-radius:12px;padding:24px;margin-bottom:20px}
+.card h2{font-size:16px;color:#00d4ff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.step{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.num{background:#00d4ff;color:#0a0f1a;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:1px}
+.step-text{font-size:14px;line-height:1.7;color:#a0c4d8}
+.step-text b{color:#e0f4ff}
+.step-text code{background:#0a0f1a;border:1px solid rgba(0,212,255,.3);padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px;color:#00d4ff}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:.2s;border:none}
+.btn-primary{background:linear-gradient(135deg,#00a8cc,#00d4ff);color:#0a0f1a}
+.btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+.btn-secondary{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:#00d4ff}
+.btn-secondary:hover{background:rgba(0,212,255,.2)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.tip{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:12px 16px;font-size:13px;color:#5a8299;margin-top:12px}
+.tip b{color:#00d4ff}
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.file-item{background:#0a0f1a;border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:12px;font-size:13px}
+.file-name{color:#f5c518;font-family:monospace;font-weight:700;margin-bottom:4px}
+.file-desc{color:#5a8299;font-size:11px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:4px}
+.tag-main{background:rgba(0,255,136,.15);color:#00ff88;border:1px solid rgba(0,255,136,.3)}
+.tag-dev{background:rgba(139,92,246,.15);color:#8b5cf6;border:1px solid rgba(139,92,246,.3)}
+.cmd-box{background:#000;border:1px solid rgba(0,212,255,.2);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#00d4ff;margin-top:12px;direction:ltr;text-align:left;line-height:2}
+.cmd-box .comment{color:#3a5a70}
+.cmd-box .cmd{color:#00ff88}
+.divider{height:1px;background:rgba(0,212,255,.1);margin:20px 0}
+</style>
+</head>
+<body>
+
+<h1>⚡ NEXUS TRADE</h1>
+<div class="subtitle">AI Trading Platform v2.0 — دليل البدء السريع</div>
+
+<!-- LAUNCH -->
+<div class="card">
+  <h2>🚀 تشغيل المنصة الآن</h2>
+  <div class="step">
+    <div class="num">1</div>
+    <div class="step-text">انقر مرتين على ملف <b>start.bat</b> في هذا المجلد</div>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <div class="step-text">أو افتح <b>nexus-trade-full.html</b> مباشرة في Chrome أو Edge</div>
+  </div>
+  <div class="tip">
+    <b>نصيحة:</b> إذا لم يعمل start.bat، انقر بالزر الأيمن على nexus-trade-full.html ← Open with ← Chrome
+  </div>
+  <div class="btns">
+    <a class="btn btn-primary" href="nexus-trade-full.html" target="_blank">🌐 فتح المنصة مباشرة</a>
+  </div>
+</div>
+
+<!-- FILES -->
+<div class="card">
+  <h2>📁 الملفات المهمة</h2>
+  <div class="files">
+    <div class="file-item">
+      <div class="file-name">nexus-trade-full.html</div>
+      <div class="file-desc" style="margin-bottom:6px">المنصة الكاملة في ملف واحد</div>
+      <span class="tag tag-main">الأساسي</span>
+    </div>
+    <div class="file-item">
+      <div class="file-name">start.bat</div>
+      <div class="file-desc" style="margin-bottom:6px">تشغيل بنقرة مزدوجة على Windows</div>
+      <span class="tag tag-main">Windows</span>
+    </div>
+    <div class="file-item">
+      <div class="file-name">src/js/chart/chart.js</div>
+      <div class="file-desc" style="margin-bottom:6px">محرك الشارت — لإصلاح أخطاء الشارت</div>
+      <span class="tag tag-dev">تطوير</span>
+    </div>
+    <div class="file-item">
+      <div class="file-name">src/css/main.css</div>
+      <div class="file-desc" style="margin-bottom:6px">كل التصميم في مكان واحد</div>
+      <span class="tag tag-dev">تطوير</span>
+    </div>
+    <div class="file-item">
+      <div class="file-name">docs/BUGS.md</div>
+      <div class="file-desc" style="margin-bottom:6px">قائمة الأخطاء المعروفة + الحلول</div>
+      <span class="tag tag-dev">مرجع</span>
+    </div>
+    <div class="file-item">
+      <div class="file-name">docs/GITHUB_GUIDE.md</div>
+      <div class="file-desc" style="margin-bottom:6px">خطوات رفع المشروع على GitHub</div>
+      <span class="tag tag-dev">مرجع</span>
+    </div>
+  </div>
+</div>
+
+<!-- GITHUB -->
+<div class="card">
+  <h2>🐙 رفع المشروع على GitHub</h2>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div class="step-text">
+      اذهب إلى <b>github.com</b> وأنشئ حساباً مجانياً إذا لم يكن لديك
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <div class="step-text">
+      انقر <b>+</b> ← <b>New repository</b> ← اكتب اسم مثل <code>nexus-trade</code> ← <b>Create repository</b>
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <div class="step-text">
+      انقر <b>uploading an existing file</b> ← اسحب جميع الملفات ← <b>Commit changes</b>
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">4</div>
+    <div class="step-text">
+      لنشر الموقع: <b>Settings</b> ← <b>Pages</b> ← اختر <b>main</b> ← <b>Save</b>
+      <br>رابطك سيكون: <code>https://USERNAME.github.io/nexus-trade/nexus-trade-full.html</code>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2 style="margin-bottom:12px">💻 باستخدام Git (أسرع للتحديثات)</h2>
+  <div class="step">
+    <div class="num">1</div>
+    <div class="step-text">حمّل Git من <b>git-scm.com</b> وثبّته بالإعدادات الافتراضية</div>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <div class="step-text">افتح <b>CMD</b> داخل مجلد المشروع (Shift + كليك يمين ← Open PowerShell here)</div>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <div class="step-text">نفّذ هذه الأوامر:</div>
+  </div>
+
+  <div class="cmd-box">
+    <span class="comment"># استبدل USERNAME باسم حساب GitHub الخاص بك</span><br>
+    <span class="cmd">git init</span><br>
+    <span class="cmd">git add .</span><br>
+    <span class="cmd">git commit -m "Initial: NEXUS TRADE v2.0"</span><br>
+    <span class="cmd">git branch -M main</span><br>
+    <span class="cmd">git remote add origin https://github.com/USERNAME/nexus-trade.git</span><br>
+    <span class="cmd">git push -u origin main</span>
+  </div>
+
+  <div class="tip">
+    <b>تحديث الملفات لاحقاً:</b> بعد أي تعديل نفّذ:
+    <code style="display:block;margin-top:6px;direction:ltr;text-align:left">git add . && git commit -m "Update" && git push</code>
+  </div>
+</div>
+
+<!-- EDIT -->
+<div class="card">
+  <h2>✏️ تعديل الكود</h2>
+  <div class="step">
+    <div class="num">1</div>
+    <div class="step-text">
+      حمّل <b>VS Code</b> مجاناً من <b>code.visualstudio.com</b>
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <div class="step-text">
+      افتح مجلد المشروع بالكامل: <b>File</b> ← <b>Open Folder</b>
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <div class="step-text">
+      لإصلاح الشارت: افتح <code>src/js/chart/chart.js</code> — كل خطأ موثّق فيه بـ <code>// TODO FIX</code>
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">4</div>
+    <div class="step-text">
+      بعد التعديل على <code>nexus-trade-full.html</code> أعِد تحميل المتصفح بـ <b>F5</b>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:20px;color:#2a4a5a;font-size:12px">
+  NEXUS TRADE v2.0 — AI Trading Platform
+</div>
+
+</body>
+</html>
