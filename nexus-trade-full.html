@@ -267,9 +267,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
 .log-warn{color:var(--gold)}
 
 /* ===== FULL PAGES ===== */
-.full-page{display:none;flex-direction:column;height:calc(100vh - 106px);overflow-y:auto;position:relative;z-index:1}
+.full-page{display:none;flex-direction:column;height:calc(100vh - 106px);overflow-y:auto;overflow-x:hidden;position:relative;z-index:1}
 .full-page.active{display:flex}
-.fp-wrap{padding:20px;max-width:1400px;margin:0 auto;width:100%}
+.fp-wrap{padding:16px 20px;max-width:1400px;margin:0 auto;width:100%;flex-shrink:0}
 .fp-title{font-family:var(--font-hud);font-size:20px;font-weight:700;color:var(--cyan);letter-spacing:2px;margin-bottom:20px;display:flex;align-items:center;gap:10px}
 
 /* STATS GRID */
@@ -397,19 +397,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
   <div class="nt-label" id="ntLabel">أخبار</div>
   <div style="overflow:hidden;flex:1">
     <div class="nt-track" id="ntTrack">
-      <span class="nt-item">Fed يُبقي على أسعار الفائدة — السوق ينتظر بيانات التضخم غداً</span>
-      <span class="nt-item">EUR/USD يختبر مقاومة 1.0870 وسط ترقب لبيانات PMI الأوروبية</span>
-      <span class="nt-item">الذهب يتخطى 2950 دولار للأوقية في موجة طلب قوية</span>
-      <span class="nt-item">بيتكوين يرتفع 3.2% بعد بيانات ETF الإيجابية</span>
-      <span class="nt-item">OPEC+ تخفض إنتاجها مجدداً — النفط يرتفع 2.4%</span>
-      <span class="nt-item">Bank of Japan يُلمح لرفع الفائدة في الاجتماع القادم</span>
-      <span class="nt-item">تقرير NFP أمريكي يُظهر إضافة 248K وظيفة — أفضل من التوقعات</span>
-      <span class="nt-item">Fed يُبقي على أسعار الفائدة — السوق ينتظر بيانات التضخم غداً</span>
-      <span class="nt-item">EUR/USD يختبر مقاومة 1.0870 وسط ترقب لبيانات PMI الأوروبية</span>
-      <span class="nt-item">الذهب يتخطى 2950 دولار للأوقية في موجة طلب قوية</span>
-      <span class="nt-item">بيتكوين يرتفع 3.2% بعد بيانات ETF الإيجابية</span>
-      <span class="nt-item">OPEC+ تخفض إنتاجها مجدداً — النفط يرتفع 2.4%</span>
+      <span class="nt-item">🔴 Fed يُبقي على أسعار الفائدة عند 5.25% — ترقب لبيانات CPI الأمريكي</span>
+      <span class="nt-item">📈 EUR/USD يختبر مقاومة 1.0870 وسط ترقب لبيانات PMI الأوروبية</span>
+      <span class="nt-item">🥇 الذهب يتخطى 2,950 دولار — أعلى مستوى منذ 3 أشهر</span>
+      <span class="nt-item">₿ بيتكوين يرتفع 3.2% بعد تدفقات ETF القياسية — يستهدف $90,000</span>
+      <span class="nt-item">🛢️ OPEC+ تخفض الإنتاج 500K برميل — النفط يرتفع 2.4%</span>
+      <span class="nt-item">🇯🇵 Bank of Japan يُلمح لرفع الفائدة في مارس — JPY يتقوى</span>
+      <span class="nt-item">📊 NFP: 248K وظيفة جديدة — أقوى من التوقع 235K</span>
+      <span class="nt-item">🔴 Fed يُبقي على أسعار الفائدة عند 5.25% — ترقب لبيانات CPI الأمريكي</span>
+      <span class="nt-item">📈 EUR/USD يختبر مقاومة 1.0870 وسط ترقب لبيانات PMI الأوروبية</span>
+      <span class="nt-item">🥇 الذهب يتخطى 2,950 دولار — أعلى مستوى منذ 3 أشهر</span>
+      <span class="nt-item">₿ بيتكوين يرتفع 3.2% بعد تدفقات ETF القياسية — يستهدف $90,000</span>
+      <span class="nt-item">🛢️ OPEC+ تخفض الإنتاج 500K برميل — النفط يرتفع 2.4%</span>
     </div>
+  </div>
+  <!-- Live clock on ticker -->
+  <div style="flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 12px;border-right:1px solid rgba(0,212,255,.2);background:rgba(0,0,0,.3)">
+    <span style="color:var(--cyan);font-size:10px">🕐</span>
+    <span id="tickerClock" style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--cyan);letter-spacing:1px">00:00:00</span>
   </div>
 </div>
 
@@ -447,6 +452,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
     <button class="nav-tab" onclick="switchPage('portfolio',this)" data-ar="المحفظة" data-en="Portfolio">المحفظة</button>
     <button class="nav-tab" onclick="switchPage('performance',this)" data-ar="الأداء" data-en="Performance">الأداء</button>
     <button class="nav-tab" onclick="switchPage('risk',this)" data-ar="إدارة المخاطر" data-en="Risk Mgmt">إدارة المخاطر</button>
+    <button class="nav-tab" onclick="switchPage('alerts',this)" data-ar="التنبيهات" data-en="Alerts">🔔 التنبيهات</button>
+    <button class="nav-tab" onclick="switchPage('lab',this)" data-ar="المختبر" data-en="Lab">🧪 المختبر</button>
     <button class="nav-tab" onclick="switchPage('news',this)" data-ar="الأخبار" data-en="News">الأخبار</button>
     <button class="nav-tab" onclick="switchPage('calendar',this)" data-ar="الأجندة الاقتصادية" data-en="Economic Calendar">الأجندة</button>
     <button class="nav-tab" onclick="switchPage('settings',this)" data-ar="الإعدادات" data-en="Settings">الإعدادات</button>
@@ -998,40 +1005,223 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
 </div>
 
 <!-- =================== NEWS PAGE =================== -->
+<!-- =================== NEWS PAGE =================== -->
 <div id="page-news" class="full-page">
   <div class="fp-wrap">
-    <div class="fp-title" style="display:flex;align-items:center;justify-content:space-between">
-      <span>📰 <span data-ar="أخبار السوق" data-en="Market News">أخبار السوق</span></span>
+    <div class="fp-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <span>📰 أخبار السوق</span>
       <div style="display:flex;align-items:center;gap:10px">
-        <div style="display:flex;align-items:center;gap:6px;background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:5px 12px">
-          <span style="color:var(--gold);font-size:14px">🕐</span>
-          <span style="font-family:var(--font-mono);font-size:13px;color:var(--cyan)" id="newsClock">--:--:--</span>
-          <span style="font-size:10px;color:var(--text3)" id="newsDate">-</span>
+        <div style="display:flex;gap:6px">
+          <button onclick="filterNews('all',this)" class="news-filter-btn act" style="padding:3px 10px;background:var(--cyan3);border:1px solid var(--border2);color:var(--cyan);border-radius:4px;font-size:10px;cursor:pointer">الكل</button>
+          <button onclick="filterNews('high',this)" class="news-filter-btn" style="padding:3px 10px;background:none;border:1px solid var(--border);color:var(--red);border-radius:4px;font-size:10px;cursor:pointer">🔴 عالي</button>
+          <button onclick="filterNews('med',this)" class="news-filter-btn" style="padding:3px 10px;background:none;border:1px solid var(--border);color:var(--gold);border-radius:4px;font-size:10px;cursor:pointer">🟡 متوسط</button>
+          <button onclick="filterNews('low',this)" class="news-filter-btn" style="padding:3px 10px;background:none;border:1px solid var(--border);color:var(--green);border-radius:4px;font-size:10px;cursor:pointer">🟢 منخفض</button>
         </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);font-family:var(--font-mono)">
-          <span style="width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite;box-shadow:var(--glow-green)"></span>
-          <span data-ar="مباشر" data-en="LIVE">مباشر</span>
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3)">
+          <span style="width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
+          <span id="newsLiveTime" style="font-family:var(--font-mono);color:var(--cyan)">--:--:--</span>
         </div>
       </div>
     </div>
-    <div class="news-grid">
-      <div class="news-card"><span class="news-impact ni-high" data-ar="تأثير عالٍ" data-en="High Impact">تأثير عالٍ</span><div class="news-title">Fed يُبقي على الفائدة عند 5.25% — التركيز على التضخم</div><div class="news-meta"><span>Reuters</span><span>منذ 35 دقيقة</span><span style="color:var(--green)">▲ USD</span></div></div>
-      <div class="news-card"><span class="news-impact ni-high">تأثير عالٍ</span><div class="news-title">بيانات NFP: إضافة 248K وظيفة — أقوى من المتوقع بكثير</div><div class="news-meta"><span>Bloomberg</span><span>منذ ساعتين</span><span style="color:var(--green)">▲ USD</span></div></div>
-      <div class="news-card"><span class="news-impact ni-med" data-ar="تأثير متوسط" data-en="Medium Impact">تأثير متوسط</span><div class="news-title">Bank of Japan يُلمح لرفع الفائدة قبل نهاية العام</div><div class="news-meta"><span>FT</span><span>منذ 3 ساعات</span><span style="color:var(--green)">▲ JPY</span></div></div>
-      <div class="news-card"><span class="news-impact ni-high">تأثير عالٍ</span><div class="news-title">OPEC+ تخفض الإنتاج — النفط يرتفع لأعلى مستوياته منذ شهرين</div><div class="news-meta"><span>CNBC</span><span>منذ 4 ساعات</span><span style="color:var(--gold)">▲ OIL</span></div></div>
-      <div class="news-card"><span class="news-impact ni-low" data-ar="تأثير منخفض" data-en="Low Impact">تأثير منخفض</span><div class="news-title">الذهب يتجاوز 2950 دولار وسط مخاوف جيوسياسية متصاعدة</div><div class="news-meta"><span>Market Watch</span><span>منذ 5 ساعات</span><span style="color:var(--gold)">▲ XAU</span></div></div>
-      <div class="news-card"><span class="news-impact ni-med">تأثير متوسط</span><div class="news-title">بيتكوين يختبر مقاومة $85,000 — تدفقات ETF قياسية</div><div class="news-meta"><span>CoinDesk</span><span>منذ 6 ساعات</span><span style="color:var(--cyan)">▲ BTC</span></div></div>
-    </div>
+    <div id="newsGrid" class="news-grid"></div>
   </div>
 </div>
 
 <!-- =================== CALENDAR PAGE =================== -->
 <div id="page-calendar" class="full-page">
   <div class="fp-wrap">
-    <div class="fp-title">📅 <span data-ar="الأجندة الاقتصادية" data-en="Economic Calendar">الأجندة الاقتصادية</span></div>
-    <div class="data-table cal-table">
-      <div class="dt-head cal-table"><span data-ar="الوقت" data-en="Time">الوقت</span><span data-ar="الحدث" data-en="Event">الحدث</span><span data-ar="الدولة" data-en="Country">الدولة/التأثير</span><span data-ar="السابق" data-en="Previous">السابق</span><span data-ar="التوقع" data-en="Forecast">التوقع</span><span data-ar="الفعلي" data-en="Actual">الفعلي</span></div>
+    <div class="fp-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <span>📅 الأجندة الاقتصادية</span>
+      <div style="display:flex;gap:6px">
+        <button onclick="filterCal('all',this)" class="cal-filter-btn act" style="padding:3px 10px;background:var(--cyan3);border:1px solid var(--border2);color:var(--cyan);border-radius:4px;font-size:10px;cursor:pointer">الكل</button>
+        <button onclick="filterCal('high',this)" class="cal-filter-btn" style="padding:3px 10px;background:none;border:1px solid var(--border);color:var(--red);border-radius:4px;font-size:10px;cursor:pointer">🔴 عالي فقط</button>
+        <button onclick="filterCal('today',this)" class="cal-filter-btn" style="padding:3px 10px;background:none;border:1px solid var(--border);color:var(--gold);border-radius:4px;font-size:10px;cursor:pointer">اليوم</button>
+      </div>
+    </div>
+    <div class="data-table">
+      <div class="dt-head" style="display:grid;grid-template-columns:70px 1fr 80px 70px 70px 70px 60px">
+        <span>الوقت</span><span>الحدث</span><span>الدولة</span><span>التأثير</span><span>السابق</span><span>التوقع</span><span>الفعلي</span>
+      </div>
       <div id="calRows"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== ALERTS PAGE =================== -->
+<div id="page-alerts" class="full-page">
+  <div class="fp-wrap">
+    <div class="fp-title">🔔 التنبيهات الذكية</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+
+      <!-- Add new alert -->
+      <div class="chart-card">
+        <div class="cc-title">➕ إضافة تنبيه جديد</div>
+        <div class="f-grp" style="margin-bottom:10px">
+          <div class="f-lbl">الزوج</div>
+          <select class="f-inp" id="alertPair">
+            <option>EUR/USD</option><option>GBP/USD</option><option>XAU/USD</option>
+            <option>BTC/USD</option><option>USD/JPY</option><option>ETH/USD</option>
+          </select>
+        </div>
+        <div class="f-grp" style="margin-bottom:10px">
+          <div class="f-lbl">نوع التنبيه</div>
+          <select class="f-inp" id="alertType">
+            <option value="price_above">السعر يتجاوز</option>
+            <option value="price_below">السعر ينخفض دون</option>
+            <option value="rsi_ob">RSI تشبع شراء (&gt;75)</option>
+            <option value="rsi_os">RSI تشبع بيع (&lt;25)</option>
+            <option value="macd_cross_up">MACD تقاطع صاعد</option>
+            <option value="macd_cross_dn">MACD تقاطع هابط</option>
+          </select>
+        </div>
+        <div class="f-grp" id="alertPriceGroup" style="margin-bottom:10px">
+          <div class="f-lbl">السعر المستهدف</div>
+          <input class="f-inp" type="number" id="alertPrice" step="0.0001" placeholder="1.09000" style="direction:ltr">
+        </div>
+        <div class="f-grp" style="margin-bottom:12px">
+          <div class="f-lbl">نوع الإشعار</div>
+          <div style="display:flex;gap:8px;margin-top:5px">
+            <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer"><input type="checkbox" id="alertSound" checked style="accent-color:var(--cyan)"> 🔊 صوت</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer"><input type="checkbox" id="alertToast" checked style="accent-color:var(--cyan)"> 💬 إشعار</label>
+          </div>
+        </div>
+        <button onclick="addAlert()" style="width:100%;padding:9px;background:linear-gradient(135deg,var(--cyan2),var(--cyan));color:#020810;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-ui)">
+          ➕ إضافة التنبيه
+        </button>
+      </div>
+
+      <!-- Active alerts + history -->
+      <div>
+        <div class="chart-card" style="margin-bottom:12px">
+          <div class="cc-title" style="display:flex;justify-content:space-between">
+            <span>📋 التنبيهات النشطة</span>
+            <span id="alertCount" style="color:var(--gold);font-family:var(--font-mono)">0</span>
+          </div>
+          <div id="alertsList" style="max-height:180px;overflow-y:auto">
+            <div style="color:var(--text4);font-size:11px;text-align:center;padding:20px">لا توجد تنبيهات نشطة</div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="cc-title">📜 سجل التنبيهات المُفعَّلة</div>
+          <div id="alertHistory" style="max-height:160px;overflow-y:auto">
+            <div style="color:var(--text4);font-size:11px;text-align:center;padding:15px">لا يوجد سجل بعد</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick alerts row -->
+    <div class="chart-card" style="margin-top:16px">
+      <div class="cc-title">⚡ تنبيهات سريعة للمؤشرات</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px">
+        <label style="display:flex;justify-content:space-between;align-items:center;background:var(--bg4);padding:10px;border-radius:7px;border:1px solid var(--border);cursor:pointer">
+          <div><div style="font-size:11px;font-weight:700">RSI &gt; 75</div><div style="font-size:9px;color:var(--text3)">تشبع شراء</div></div>
+          <input type="checkbox" id="qa-rsi-ob" checked onchange="toggleQuickAlert('rsi-ob',this)" style="accent-color:var(--red)">
+        </label>
+        <label style="display:flex;justify-content:space-between;align-items:center;background:var(--bg4);padding:10px;border-radius:7px;border:1px solid var(--border);cursor:pointer">
+          <div><div style="font-size:11px;font-weight:700">RSI &lt; 25</div><div style="font-size:9px;color:var(--text3)">تشبع بيع</div></div>
+          <input type="checkbox" id="qa-rsi-os" checked onchange="toggleQuickAlert('rsi-os',this)" style="accent-color:var(--green)">
+        </label>
+        <label style="display:flex;justify-content:space-between;align-items:center;background:var(--bg4);padding:10px;border-radius:7px;border:1px solid var(--border);cursor:pointer">
+          <div><div style="font-size:11px;font-weight:700">MACD Cross</div><div style="font-size:9px;color:var(--text3)">تقاطع إشارة</div></div>
+          <input type="checkbox" id="qa-macd" checked onchange="toggleQuickAlert('macd',this)" style="accent-color:var(--gold)">
+        </label>
+        <label style="display:flex;justify-content:space-between;align-items:center;background:var(--bg4);padding:10px;border-radius:7px;border:1px solid var(--border);cursor:pointer">
+          <div><div style="font-size:11px;font-weight:700">هامش &lt; 150%</div><div style="font-size:9px;color:var(--text3)">تحذير هامش</div></div>
+          <input type="checkbox" id="qa-margin" checked onchange="toggleQuickAlert('margin',this)" style="accent-color:var(--purple)">
+        </label>
+      </div>
+      <button onclick="testAlertSound()" style="margin-top:12px;padding:7px 16px;background:var(--bg4);border:1px solid var(--border2);color:var(--cyan);border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--font-ui)">
+        🔔 اختبار الصوت
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== LAB PAGE =================== -->
+<div id="page-lab" class="full-page">
+  <div class="fp-wrap">
+    <div class="fp-title">🧪 المختبر — اختبار الاستراتيجيات</div>
+
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px">
+
+      <!-- Strategy builder -->
+      <div>
+        <div class="chart-card" style="margin-bottom:12px">
+          <div class="cc-title">⚙️ بناء الاستراتيجية</div>
+          <div class="f-grp" style="margin-bottom:10px">
+            <div class="f-lbl">الزوج</div>
+            <select class="f-inp" id="labPair">
+              <option>EUR/USD</option><option>GBP/USD</option><option>XAU/USD</option><option>BTC/USD</option>
+            </select>
+          </div>
+          <div class="f-grp" style="margin-bottom:10px">
+            <div class="f-lbl">الإطار الزمني</div>
+            <select class="f-inp" id="labTF">
+              <option value="15">15 دقيقة</option><option value="60">ساعة</option>
+              <option value="240">4 ساعات</option><option value="1440">يومي</option>
+            </select>
+          </div>
+          <div style="font-size:9px;letter-spacing:1px;color:var(--text3);font-family:var(--font-hud);margin-bottom:8px">المؤشرات</div>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px">
+            <label style="display:flex;justify-content:space-between;align-items:center;font-size:11px;cursor:pointer">
+              <span>RSI (14) — دخول &lt;35 / خروج &gt;65</span>
+              <input type="checkbox" id="lab-rsi" checked style="accent-color:var(--cyan)">
+            </label>
+            <label style="display:flex;justify-content:space-between;align-items:center;font-size:11px;cursor:pointer">
+              <span>MACD Cross — إشارة تقاطع</span>
+              <input type="checkbox" id="lab-macd" checked style="accent-color:var(--cyan)">
+            </label>
+            <label style="display:flex;justify-content:space-between;align-items:center;font-size:11px;cursor:pointer">
+              <span>EMA (20/50) — اتجاه</span>
+              <input type="checkbox" id="lab-ema" checked style="accent-color:var(--cyan)">
+            </label>
+            <label style="display:flex;justify-content:space-between;align-items:center;font-size:11px;cursor:pointer">
+              <span>BB — ارتداد من الحدود</span>
+              <input type="checkbox" id="lab-bb" style="accent-color:var(--cyan)">
+            </label>
+          </div>
+          <div class="f-grp" style="margin-bottom:10px">
+            <div class="f-lbl">نسبة المخاطرة %</div>
+            <input class="f-inp" type="number" id="labRisk" value="2" min="0.1" max="10" step="0.1" style="direction:ltr">
+          </div>
+          <div class="f-grp" style="margin-bottom:14px">
+            <div class="f-lbl">R:R المستهدف</div>
+            <input class="f-inp" type="number" id="labRR" value="2" min="0.5" max="10" step="0.1" style="direction:ltr">
+          </div>
+          <button onclick="runBacktest()" id="backtestBtn" style="width:100%;padding:10px;background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(139,92,246,.6));border:1px solid rgba(139,92,246,.5);color:#fff;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-ui)">
+            ▶ تشغيل الاختبار
+          </button>
+        </div>
+
+        <!-- Bot integration -->
+        <div class="chart-card">
+          <div class="cc-title">🤖 إدماج مع البوت</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.6">
+            بعد اختبار الاستراتيجية، يمكن نقلها للبوت مباشرة:
+          </div>
+          <button onclick="applyStratToBot()" style="width:100%;padding:8px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);color:var(--green);border-radius:6px;font-size:11px;cursor:pointer;font-family:var(--font-ui)">
+            📤 تطبيق على البوت
+          </button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div>
+        <div class="chart-card" style="margin-bottom:12px">
+          <div class="cc-title">📊 نتائج الاختبار</div>
+          <div id="labResults">
+            <div style="text-align:center;padding:40px;color:var(--text4)">
+              <div style="font-size:36px;margin-bottom:10px">🧪</div>
+              <div style="font-size:12px">اضغط "تشغيل الاختبار" لرؤية النتائج</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="cc-title">📈 منحنى رأس المال (الاختبار)</div>
+          <canvas id="labChart" height="160"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1238,7 +1428,9 @@ function CH_layout(){
   ST.pMin=pMin-r*0.18; ST.pMax=pMax+r*0.18;
   const cW=ST.W-CFG.PW;
   ST.mH=ST.H-CFG.TH-CFG.SUB-1;
-  ST.barSpacing=cW/Math.max(1,ST.barsData.length);
+  // Add 8% right margin so last candle has breathing room from price axis
+  const MARGIN_BARS=Math.max(2,Math.round(ST.barsData.length*0.08));
+  ST.barSpacing=cW/Math.max(1,ST.barsData.length+MARGIN_BARS);
   ST.barW=Math.max(1,ST.barSpacing*0.72);
 }
 const pToY=p=>CFG.SUB+ST.mH*(1-(p-ST.pMin)/(ST.pMax-ST.pMin));
@@ -1598,29 +1790,17 @@ function CH_frame(){
   requestAnimationFrame(CH_frame);
 }
 
-// ── LIVE TICK — synced with S.prices (single source of truth) ────
+// ── LIVE TICK ─────────────────────────────────────────────
 function CH_liveTick(){
-  if(!ST.candles.length) return;
-  const cp=S.prices[S.pair]; if(!cp) return;
-  const dp=cp.d||5;
-  const last=ST.candles[ST.candles.length-1];
-
-  // Soft-follow S.prices so chart price never drifts far from watchlist price
-  const drift=(cp.p-last.c)*0.15;
-  const noise=last.c*(Math.random()-0.5)*0.0002;
-  last.c=+(Math.max(0.0001,last.c+drift+noise)).toFixed(dp);
-  last.h=Math.max(last.h,last.c);
-  last.l=Math.min(last.l,last.c);
-
-  // New candle ~every 20 ticks
-  if(Math.random()<0.05){
-    const o=last.c, move=o*0.0005;
-    const c=+(o+(Math.random()-0.49)*move).toFixed(dp);
-    ST.candles.push({o,c,
-      h:Math.max(o,c)+Math.random()*Math.abs(c-o)*0.4,
-      l:Math.min(o,c)-Math.random()*Math.abs(c-o)*0.4,
-      v:Math.floor(100+Math.random()*600),t:Date.now()});
-    if(ST.candles.length>500) ST.candles.shift();
+  if(!ST.candles.length)return;
+  const cp=S.prices[S.pair];if(!cp)return;
+  const dp=cp.d||5,last=ST.candles[ST.candles.length-1];
+  last.c=+(Math.max(0.001,last.c+(Math.random()-0.49)*last.c*0.0004)).toFixed(dp);
+  last.h=Math.max(last.h,last.c);last.l=Math.min(last.l,last.c);
+  if(Math.random()<0.06){
+    const o=last.c,c=+(o+(Math.random()-0.49)*o*0.0005).toFixed(dp);
+    ST.candles.push({o,h:Math.max(o,c)+Math.random()*Math.abs(c-o)*0.3,l:Math.min(o,c)-Math.random()*Math.abs(c-o)*0.3,c,v:Math.floor(50+Math.random()*500),t:Date.now()});
+    if(ST.candles.length>500)ST.candles.shift();
     CH_buildHA();
   }
   CH_dirty=true;
@@ -1782,46 +1962,13 @@ function setMode(mode){
 }
 function setLev(lev,el){S.lev=lev;document.querySelectorAll('.lev-btn').forEach(b=>b.classList.remove('act'));el.classList.add('act');}
 function calcRisk(){
-  const vol   = parseFloat(document.getElementById('fVol')?.value) || 0.1;
-  const price = S.prices[S.pair]?.p || 1.0843;
-  const sl    = parseFloat(document.getElementById('fSL')?.value)  || 0;
-  const tp    = parseFloat(document.getElementById('fTP')?.value)  || 0;
-  const pair  = S.pair;
-
-  // Pip value per lot (standard lot = 100,000 units)
-  const isJPY = pair.includes('JPY');
-  const isXAU = pair.includes('XAU') || pair.includes('XAG');
-  const isCrypto = pair.includes('BTC') || pair.includes('ETH') || pair.includes('SOL');
-  const isIndex  = pair.includes('SPX') || pair.includes('NAS') || pair.includes('GER');
-
-  let pipSize, pipValuePerLot;
-  if (isJPY)    { pipSize = 0.01;   pipValuePerLot = 1000; }
-  else if (isXAU){ pipSize = 0.1;   pipValuePerLot = 100;  }
-  else if (isCrypto){ pipSize = 1;  pipValuePerLot = 1;    }
-  else if (isIndex) { pipSize = 1;  pipValuePerLot = 1;    }
-  else           { pipSize = 0.0001; pipValuePerLot = 10;  }
-
-  // Calculate actual risk/reward in dollars
-  const slDist = sl > 0 ? Math.abs(price - sl) : price * 0.003;
-  const tpDist = tp > 0 ? Math.abs(tp - price) : price * 0.006;
-
-  const riskDollar   = (slDist / pipSize) * pipValuePerLot * vol;
-  const rewardDollar = (tpDist / pipSize) * pipValuePerLot * vol;
-  const rr           = riskDollar > 0 ? rewardDollar / riskDollar : 0;
-
-  // Margin = (vol * contract_size * price) / leverage
-  const levNum   = parseInt((S.lev || '1:100').split(':')[1]) || 100;
-  const contractSize = isCrypto ? 1 : isIndex ? 1 : 100000;
-  const margin   = (vol * contractSize * price) / levNum;
-
-  document.getElementById('rbRisk').textContent    = '-$' + riskDollar.toFixed(2);
-  document.getElementById('rbReward').textContent  = '+$' + rewardDollar.toFixed(2);
-  document.getElementById('rbRR').textContent      = '1:' + rr.toFixed(2);
-  document.getElementById('rbMargin').textContent  = '$' + margin.toFixed(2);
-
-  // Color code R:R
-  const rrEl = document.getElementById('rbRR');
-  if (rrEl) rrEl.style.color = rr >= 2 ? 'var(--green)' : rr >= 1.5 ? 'var(--gold)' : 'var(--red)';
+  const vol=parseFloat(document.getElementById('fVol').value)||0.1;
+  const risk=(vol*10000*0.008).toFixed(2);
+  const reward=(risk*1.5).toFixed(2);
+  document.getElementById('rbRisk').textContent='-$'+risk;
+  document.getElementById('rbReward').textContent='+$'+reward;
+  document.getElementById('rbRR').textContent='1:'+(reward/risk).toFixed(1);
+  document.getElementById('rbMargin').textContent='$'+(vol*S.prices[S.pair]?.p*1000/100).toFixed(2);
 }
 function execTrade(){
   const pair=S.pair,mode=S.mode,price=S.prices[S.pair]?.p.toFixed(5),vol=document.getElementById('fVol').value;
@@ -1838,123 +1985,37 @@ function switchRT(tab,el){
   if(tab==='bot') initBotPerfChart();
 }
 
-// ===== SIGNALS — Dynamic from live indicators =====
-function generateSignals(){
-  const pairs=['EUR/USD','XAU/USD','GBP/USD','USD/JPY','BTC/USD'];
-  const signals=[];
-  pairs.forEach(pair=>{
-    const info=S.prices[pair]; if(!info) return;
-    // Build mini candle array for this pair from current price + small history
-    const closes=ST.candles.length>=50
-      ? (pair===S.pair ? ST.candles.map(c=>c.c) : (() => {
-          // For non-active pairs, synthesize from current price
-          const arr=[]; let p=info.p*(0.98+Math.random()*0.04);
-          for(let i=60;i>=0;i--){p+=((Math.random()-0.48)*info.p*0.0005);arr.push(p);}
-          arr.push(info.p); return arr;
-        })())
-      : [info.p];
-
-    if(closes.length<15) return;
-
-    // Calculate real indicators
-    const rsiArr  = CH_rsi(closes,14);
-    const rsi     = rsiArr.filter(v=>v!==null).pop() || 50;
-    const macdRes = CH_macd(closes);
-    const macdLast  = macdRes.m[macdRes.m.length-1] || 0;
-    const sigLast   = macdRes.s[macdRes.s.length-1] || 0;
-    const macdHist  = macdRes.h[macdRes.h.length-1] || 0;
-    const macdPrev  = macdRes.h[macdRes.h.length-2] || 0;
-    const ema20arr  = CH_ema(closes,20);
-    const ema50arr  = CH_ema(closes,50);
-    const ema20     = ema20arr[ema20arr.length-1];
-    const ema50     = ema50arr[ema50arr.length-1];
-    const price     = info.p;
-    const dp        = info.d;
-
-    // Scoring system — each condition adds to buy or sell score
-    let buyScore=0, sellScore=0;
-    const reasons=[];
-
-    if(rsi<35){buyScore+=30; reasons.push(`RSI=${rsi.toFixed(0)} تشبع بيع`);}
-    else if(rsi>65){sellScore+=30; reasons.push(`RSI=${rsi.toFixed(0)} تشبع شراء`);}
-    else if(rsi>50&&rsi<65){buyScore+=10; reasons.push(`RSI=${rsi.toFixed(0)} صاعد`);}
-    else if(rsi<50&&rsi>35){sellScore+=10; reasons.push(`RSI=${rsi.toFixed(0)} هابط`);}
-
-    if(macdLast>sigLast && macdHist>0 && macdPrev<0){buyScore+=35; reasons.push('MACD تقاطع صاعد');}
-    else if(macdLast<sigLast && macdHist<0 && macdPrev>0){sellScore+=35; reasons.push('MACD تقاطع هابط');}
-    else if(macdHist>macdPrev){buyScore+=15; reasons.push('MACD إيجابي');}
-    else if(macdHist<macdPrev){sellScore+=15; reasons.push('MACD سلبي');}
-
-    if(price>ema20&&ema20>ema50){buyScore+=20; reasons.push('فوق EMA صاعد');}
-    else if(price<ema20&&ema20<ema50){sellScore+=20; reasons.push('تحت EMA هابط');}
-
-    const totalScore=buyScore+sellScore;
-    if(totalScore<20) return; // No clear signal
-
-    const dir    = buyScore>sellScore ? 'buy' : 'sell';
-    const conf   = Math.min(95, Math.round(Math.max(buyScore,sellScore)/totalScore*100));
-    if(conf<55) return; // Weak signal, skip
-
-    const isJPY  = pair.includes('JPY');
-    const pip    = isJPY?0.01:pair.includes('XAU')?0.5:pair.includes('BTC')?50:0.0005;
-    const sl_dist= pip*(isJPY?30:pair.includes('BTC')?20:30);
-    const tp_dist= sl_dist*1.8;
-    const entry  = price.toFixed(dp);
-    const sl     = dir==='buy' ? (price-sl_dist).toFixed(dp) : (price+sl_dist).toFixed(dp);
-    const tp     = dir==='buy' ? (price+tp_dist).toFixed(dp) : (price-tp_dist).toFixed(dp);
-
-    signals.push({pair,dir,entry,tp,sl,conf,
-      reason: reasons.slice(0,2).join(' + ')});
-  });
-
-  // Sort by confidence
-  signals.sort((a,b)=>b.conf-a.conf);
-  return signals.length ? signals : sigsDataFallback;
-}
-
-// Static fallback if not enough candle data yet
-const sigsDataFallback=[
-  {pair:'EUR/USD',dir:'buy',entry:'—',tp:'—',sl:'—',conf:72,reason:'جارٍ تحليل المؤشرات...'},
+// ===== SIGNALS (SMALLER) =====
+const sigsData=[
+  {pair:'EUR/USD',dir:'buy',entry:'1.08350',tp:'1.08720',sl:'1.08140',conf:87,reason:'EMA تقاطع صاعد + RSI=58'},
+  {pair:'XAU/USD',dir:'buy',entry:'2940.00',tp:'2980.00',sl:'2920.00',conf:82,reason:'دعم قوي + MACD إيجابي'},
+  {pair:'GBP/USD',dir:'sell',entry:'1.27300',tp:'1.26850',sl:'1.27550',conf:78,reason:'مقاومة 1.2740 + RSI تباعد'},
+  {pair:'USD/JPY',dir:'buy',entry:'149.750',tp:'150.500',sl:'149.350',conf:74,reason:'دعم + بيانات اقتصادية قوية'},
+  {pair:'BTC/USD',dir:'buy',entry:'83800',tp:'87500',sl:'82000',conf:71,reason:'اختراق 84000 + حجم مرتفع'},
 ];
-
 function renderSignals(){
-  const sigs=generateSignals();
-  const cc=c=>c>=85?'var(--green)':c>=70?'var(--gold)':'var(--red)';
-  const dBg=d=>d==='buy'?'rgba(0,255,136,.12)':'rgba(255,51,102,.12)';
-  const dC=d=>d==='buy'?'var(--green)':'var(--red)';
-
-  document.getElementById('sigContainer').innerHTML=
-    `<div style="font-size:9px;color:var(--text4);font-family:var(--font-mono);margin-bottom:8px;text-align:center">
-      محدّثة تلقائياً من RSI + MACD + EMA
-      <span id="sigUpdateTime" style="color:var(--text4)"></span>
-    </div>`+
-    sigs.map(s=>`
-    <div class="signal-mini ${s.dir==='buy'?'sig-buy-line':'sig-sell-line'}">
+  document.getElementById('sigContainer').innerHTML=sigsData.map(s=>{
+    const cc=s.conf>=85?'var(--green)':s.conf>=70?'var(--gold)':'var(--red)';
+    const dirBg=s.dir==='buy'?'rgba(0,255,136,.12)':'rgba(255,51,102,.12)';
+    const dirCol=s.dir==='buy'?'var(--green)':'var(--red)';
+    return `<div class="signal-mini ${s.dir==='buy'?'sig-buy-line':'sig-sell-line'}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-family:var(--font-hud);font-size:11px;font-weight:700">${s.pair}</span>
-        <span style="padding:2px 8px;border-radius:3px;font-size:9px;font-weight:900;font-family:var(--font-hud);background:${dBg(s.dir)};color:${dC(s.dir)};border:1px solid ${dC(s.dir)}40">${s.dir==='buy'?'▲ BUY':'▼ SELL'}</span>
+        <span style="font-family:var(--font-hud);font-size:11px;font-weight:700;color:var(--text)">${s.pair}</span>
+        <span style="padding:2px 8px;border-radius:3px;font-size:9px;font-weight:900;font-family:var(--font-hud);background:${dirBg};color:${dirCol};border:1px solid ${dirCol}40">${s.dir==='buy'?'▲ BUY':'▼ SELL'}</span>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:9px;font-family:var(--font-mono);margin-bottom:4px">
         <span style="color:var(--text3)">E:<b style="color:var(--text)">${s.entry}</b></span>
-        <span style="color:var(--green)">TP:${s.tp}</span>
-        <span style="color:var(--red)">SL:${s.sl}</span>
+        <span class="sm-tp">TP:${s.tp}</span>
+        <span class="sm-sl">SL:${s.sl}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
-        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden">
-          <div style="height:100%;width:${s.conf}%;background:${cc(s.conf)};border-radius:2px;transition:width .5s"></div>
-        </div>
-        <span style="font-size:9px;font-family:var(--font-mono);font-weight:700;color:${cc(s.conf)}">${s.conf}%</span>
+      <div style="display:flex;align-items:center;gap:5px">
+        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:${s.conf}%;background:${cc};border-radius:2px"></div></div>
+        <span style="font-size:9px;font-family:var(--font-mono);font-weight:700;color:${cc}">${s.conf}%</span>
       </div>
-      <div style="font-size:9px;color:var(--text3);line-height:1.4">${s.reason}</div>
-    </div>`).join('');
-
-  const el=document.getElementById('sigUpdateTime');
-  if(el){const n=new Date();el.textContent=` — ${n.getHours()}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;}
+      <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.4">${s.reason}</div>
+    </div>`;}).join('');
 }
-function refreshSigs(){
-  document.getElementById('sigContainer').innerHTML=`<div class="ai-loading" style="padding:20px;justify-content:center;display:flex;gap:8px;align-items:center"><div class="think-dots"><span></span><span></span><span></span></div><span style="font-size:11px;color:var(--text3)">${LANG==='ar'?'تحليل المؤشرات...':'Analyzing...'}</span></div>`;
-  setTimeout(renderSignals,800);
-}
+function refreshSigs(){document.getElementById('sigContainer').innerHTML=`<div class="ai-loading"><div class="think-dots"><span></span><span></span><span></span></div><span>${LANG==='ar'?'تحديث الإشارات...':'Refreshing signals...'}</span></div>`;setTimeout(renderSignals,1500);}
 
 // ===== BOT =====
 function switchBotTab(tab,el){
@@ -2206,125 +2267,6 @@ function calcLot(){
   calcRisk();
 }
 
-// ===== SMART ALERTS =====
-const activeAlerts={rsi:true, ma:true, loss:true, margin:true};
-function toggleAlert(type, el){ activeAlerts[type]=el.checked; }
-function testAlert(){
-  const sound=document.getElementById('soundAlertToggle')?.checked;
-  if(sound){
-    try{
-      const ctx=new(window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(); const gain=ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.setValueAtTime(880,ctx.currentTime);
-      osc.frequency.setValueAtTime(1100,ctx.currentTime+0.1);
-      gain.gain.setValueAtTime(0.3,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.4);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.4);
-    }catch(e){}
-  }
-  showToast('🔔 '+(LANG==='ar'?'تنبيه تجريبي: RSI وصل 76.4!':'Test alert: RSI reached 76.4!'));
-}
-function checkAlerts(pair){
-  // Called periodically — check RSI
-  if(activeAlerts.rsi && ST.candles.length>=14){
-    const closes=ST.candles.map(c=>c.c);
-    const rsiArr=CH_rsi(closes);
-    const lastRSI=rsiArr.filter(v=>v!==null).pop();
-    if(lastRSI!=null){
-      if(lastRSI>75){
-        triggerAlert(`⚠️ ${pair} RSI=${lastRSI.toFixed(1)} — ${LANG==='ar'?'تشبع شراء':'Overbought'}`,'t-sell');
-      } else if(lastRSI<25){
-        triggerAlert(`⚠️ ${pair} RSI=${lastRSI.toFixed(1)} — ${LANG==='ar'?'تشبع بيع':'Oversold'}`,'t-buy');
-      }
-    }
-  }
-}
-let lastAlertTime=0;
-function triggerAlert(msg,cls=''){
-  const now=Date.now();
-  if(now-lastAlertTime<8000) return; // debounce 8s
-  lastAlertTime=now;
-  showToast(msg,cls);
-  const sound=document.getElementById('soundAlertToggle')?.checked;
-  if(sound){
-    try{
-      const ctx=new(window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(); const gain=ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value=660; gain.gain.setValueAtTime(0.2,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.5);
-      osc.start(); osc.stop(ctx.currentTime+0.5);
-    }catch(e){}
-  }
-}
-
-// ===== LIVE CLOCK =====
-function startClock(){
-  function update(){
-    const now=new Date();
-    const hms=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-    const dateStr=now.toLocaleDateString(LANG==='ar'?'ar-SA':'en-US',{month:'short',day:'numeric'});
-    const el=document.getElementById('newsClock');
-    const del=document.getElementById('newsDate');
-    if(el) el.textContent=hms;
-    if(del) del.textContent=dateStr;
-  }
-  update();
-  setInterval(update,1000);
-}
-
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded',()=>{
-  // Build chart
-  CH_gen('EUR/USD');
-  setTimeout(()=>{ CH_bindEvents(); CH_initIndPanel(); requestAnimationFrame(CH_frame); },80);
-  setInterval(CH_liveTick, 1500);
-
-  // Build trade history data
-  buildTradeHistory();
-
-  // Init UI
-  renderOPP();
-  renderSignals();
-  calcRisk();
-  calcLot();
-  renderSettings('api');
-
-  // Set SL/TP defaults
-  const cp=S.prices['EUR/USD'];
-  document.getElementById('fSL').value=(cp.p-0.005).toFixed(5);
-  document.getElementById('fTP').value=(cp.p+0.0075).toFixed(5);
-
-  // Live ticks
-  setInterval(()=>{ tickPrices(); renderOPP(); },2000);
-
-  // Signals auto-refresh every 30s from live indicators
-  setInterval(renderSignals, 30000);
-
-  // Alert check every 15s
-  setInterval(()=>checkAlerts(S.pair), 15000);
-
-  // Balance ticker
-  setInterval(()=>{
-    const b=28470+((Math.random()-.4)*50);
-    const el=document.getElementById('pmBalance');
-    if(el) el.textContent='$'+b.toFixed(2);
-  },5000);
-
-  // Start clock
-  startClock();
-
-  // Resize
-  window.addEventListener('resize',()=>{ CH_dirty=true; });
-
-  // Open forex by default
-  const af=document.getElementById('arr-forex');
-  if(af) af.classList.add('open');
-
-  // Show signals by default in right panel
-  renderSignals();
-});
 let riskInited=false;
 function initRiskCharts(){
   // Always recreate - destroy existing charts first
@@ -2399,40 +2341,313 @@ function renderRiskContent(){
     </div>`;
 }
 
-// ===== CALENDAR =====
-const calEvents=[
-  {time:'08:30',event:'Non-Farm Payrolls (NFP)',country:'🇺🇸 USD',impact:'high',prev:'243K',fore:'235K',actual:'248K'},
-  {time:'10:00',event:'Fed Chair Speech',country:'🇺🇸 USD',impact:'high',prev:'—',fore:'—',actual:'—'},
-  {time:'11:00',event:'ECB Interest Rate Decision',country:'🇪🇺 EUR',impact:'high',prev:'3.75%',fore:'3.50%',actual:'—'},
-  {time:'13:30',event:'US CPI m/m',country:'🇺🇸 USD',impact:'high',prev:'0.3%',fore:'0.2%',actual:'—'},
-  {time:'15:00',event:'BOE Governor Speech',country:'🇬🇧 GBP',impact:'med',prev:'—',fore:'—',actual:'—'},
-  {time:'17:00',event:'US ISM Manufacturing PMI',country:'🇺🇸 USD',impact:'med',prev:'49.3',fore:'49.8',actual:'—'},
-  {time:'23:50',event:'BoJ Monetary Policy Statement',country:'🇯🇵 JPY',impact:'high',prev:'—',fore:'Hawkish',actual:'—'},
+// ===== CLOCK — ticker bar + news page =====
+function startClock(){
+  function tick(){
+    const now=new Date();
+    const hms=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    // Ticker bar clock
+    const tc=document.getElementById('tickerClock');
+    if(tc) tc.textContent=hms;
+    // News page clock
+    const nl=document.getElementById('newsLiveTime');
+    if(nl) nl.textContent=hms;
+  }
+  tick(); setInterval(tick,1000);
+}
+
+// ===== NEWS DATA & RENDER =====
+const newsData=[
+  {impact:'high',title:'Fed يُبقي على الفائدة عند 5.25% — التركيز على بيانات CPI القادمة',source:'Reuters',time:'منذ 35 دقيقة',currency:'USD',dir:'up'},
+  {impact:'high',title:'NFP: إضافة 248K وظيفة — أقوى من التوقع 235K بفارق كبير',source:'Bloomberg',time:'منذ ساعتين',currency:'USD',dir:'up'},
+  {impact:'high',title:'Bank of Japan يُلمح برفع الفائدة مارس 2026 — JPY يتقوى',source:'FT',time:'منذ 3 ساعات',currency:'JPY',dir:'up'},
+  {impact:'high',title:'OPEC+ تخفض الإنتاج 500K برميل — النفط يرتفع 2.4%',source:'CNBC',time:'منذ 4 ساعات',currency:'OIL',dir:'up'},
+  {impact:'med',title:'EUR/USD يختبر مقاومة 1.0870 — بيانات PMI الأوروبية غداً',source:'ForexLive',time:'منذ ساعة',currency:'EUR',dir:'neutral'},
+  {impact:'high',title:'الذهب يتجاوز 2,950 دولار — أعلى مستوى منذ 3 أشهر',source:'MarketWatch',time:'منذ 5 ساعات',currency:'XAU',dir:'up'},
+  {impact:'med',title:'بيتكوين يختبر مقاومة $85,000 — تدفقات ETF تتجاوز $500M',source:'CoinDesk',time:'منذ 6 ساعات',currency:'BTC',dir:'up'},
+  {impact:'low',title:'ECB: لا رفع للفائدة قبل مراجعة بيانات التضخم الأوروبي',source:'ECB',time:'منذ 7 ساعات',currency:'EUR',dir:'down'},
+  {impact:'high',title:'US CPI m/m: 0.3% مقابل توقع 0.2% — الدولار يرتفع',source:'BLS',time:'منذ يوم',currency:'USD',dir:'up'},
+  {impact:'med',title:'بنك إنجلترا يُبقي على الفائدة — الجنيه يستقر',source:'BOE',time:'منذ يومين',currency:'GBP',dir:'neutral'},
+  {impact:'low',title:'AUD/USD يرتفع بعد بيانات توظيف أسترالية أقوى من المتوقع',source:'RBA',time:'منذ يومين',currency:'AUD',dir:'up'},
+  {impact:'high',title:'الصين تعلن عن حزمة تحفيز — الأسواق الآسيوية ترتفع',source:'Xinhua',time:'منذ 3 أيام',currency:'CNY',dir:'up'},
 ];
-function renderCalendar(){
-  document.getElementById('calRows').innerHTML=calEvents.map(e=>`
-    <div class="dt-row cal-table"><span class="cal-time">${e.time}</span><span class="cal-event">${e.event}</span><span class="cal-country"><span class="news-impact ${e.impact==='high'?'ni-high':'ni-med'}" style="margin-bottom:0">${e.impact==='high'?'H':'M'}</span>${e.country}</span><span class="cal-prev">${e.prev}</span><span class="cal-fore">${e.fore}</span><span class="cal-actual" style="color:${e.actual==='—'?'var(--text4)':'var(--green)'}">${e.actual}</span></div>`).join('');
+function renderNews(filter='all'){
+  const el=document.getElementById('newsGrid'); if(!el) return;
+  const filtered=filter==='all'?newsData:newsData.filter(n=>n.impact===filter);
+  const impactLabel={high:'🔴 تأثير عالٍ',med:'🟡 تأثير متوسط',low:'🟢 تأثير منخفض'};
+  const impactClass={high:'ni-high',med:'ni-med',low:'ni-low'};
+  el.innerHTML=filtered.map(n=>`
+    <div class="news-card">
+      <span class="news-impact ${impactClass[n.impact]}">${impactLabel[n.impact]}</span>
+      <div class="news-title">${n.title}</div>
+      <div class="news-meta">
+        <span>${n.source}</span>
+        <span>${n.time}</span>
+        <span style="color:${n.dir==='up'?'var(--green)':n.dir==='down'?'var(--red)':'var(--text3)'}">${n.dir==='up'?'▲':'▼'} ${n.currency}</span>
+      </div>
+    </div>`).join('');
+}
+function filterNews(f,el){
+  document.querySelectorAll('.news-filter-btn').forEach(b=>{b.style.background='none';b.style.borderColor='var(--border)';});
+  el.style.background='var(--cyan3)'; el.style.borderColor='var(--border2)';
+  renderNews(f);
+}
+
+// ===== CALENDAR DATA & RENDER =====
+const calData=[
+  {time:'02:30',event:'Australia Employment Change',country:'🇦🇺',currency:'AUD',impact:'med',prev:'61.5K',fore:'25.0K',actual:'32.1K'},
+  {time:'08:30',event:'Non-Farm Payrolls (NFP)',country:'🇺🇸',currency:'USD',impact:'high',prev:'243K',fore:'235K',actual:'248K'},
+  {time:'10:00',event:'Fed Chair Powell Speech',country:'🇺🇸',currency:'USD',impact:'high',prev:'—',fore:'Hawkish',actual:'—'},
+  {time:'11:00',event:'ECB Interest Rate Decision',country:'🇪🇺',currency:'EUR',impact:'high',prev:'3.75%',fore:'3.50%',actual:'—'},
+  {time:'13:30',event:'US CPI m/m',country:'🇺🇸',currency:'USD',impact:'high',prev:'0.3%',fore:'0.2%',actual:'—'},
+  {time:'13:30',event:'US Core CPI m/m',country:'🇺🇸',currency:'USD',impact:'high',prev:'0.3%',fore:'0.3%',actual:'—'},
+  {time:'15:00',event:'BOE Governor Bailey Speech',country:'🇬🇧',currency:'GBP',impact:'med',prev:'—',fore:'—',actual:'—'},
+  {time:'15:30',event:'US Crude Oil Inventories',country:'🇺🇸',currency:'OIL',impact:'med',prev:'-1.2M',fore:'-0.8M',actual:'—'},
+  {time:'17:00',event:'US ISM Manufacturing PMI',country:'🇺🇸',currency:'USD',impact:'med',prev:'49.3',fore:'49.8',actual:'—'},
+  {time:'20:00',event:'FOMC Meeting Minutes',country:'🇺🇸',currency:'USD',impact:'high',prev:'—',fore:'Dovish',actual:'—'},
+  {time:'23:50',event:'BoJ Monetary Policy Statement',country:'🇯🇵',currency:'JPY',impact:'high',prev:'—',fore:'Hawkish',actual:'—'},
+  {time:'23:50',event:'Japan Trade Balance',country:'🇯🇵',currency:'JPY',impact:'low',prev:'-¥862B',fore:'-¥950B',actual:'—'},
+];
+function renderCalendar(filter='all'){
+  const el=document.getElementById('calRows'); if(!el) return;
+  const now=new Date(),currentHour=now.getHours(),currentMin=now.getMinutes();
+  const filtered=filter==='high'?calData.filter(e=>e.impact==='high'):
+    filter==='today'?calData:calData;
+  const impC={high:'var(--red)',med:'var(--gold)',low:'var(--green)'};
+  const impL={high:'HIGH',med:'MED',low:'LOW'};
+  el.innerHTML=filtered.map(e=>{
+    const [h,m]=e.time.split(':').map(Number);
+    const isPast=(h*60+m)<(currentHour*60+currentMin);
+    const isNext=!isPast&&(h*60+m)-(currentHour*60+currentMin)<60;
+    return `<div class="dt-row" style="display:grid;grid-template-columns:70px 1fr 80px 70px 70px 70px 60px;align-items:center;${isNext?'background:rgba(245,197,24,.05);border-right:2px solid var(--gold)':''}${isPast?'opacity:0.55':''}">
+      <span style="font-family:var(--font-mono);font-size:11px;color:${isNext?'var(--gold)':'var(--text2)'};font-weight:${isNext?700:400}">${e.time}${isNext?' ←':''}</span>
+      <span style="font-size:11px;color:var(--text)">${e.event}</span>
+      <span style="font-size:11px">${e.country} <span style="color:var(--text3)">${e.currency}</span></span>
+      <span style="font-size:9px;font-weight:700;color:${impC[e.impact]};font-family:var(--font-hud)">${impL[e.impact]}</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${e.prev}</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--cyan)">${e.fore}</span>
+      <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:${e.actual==='—'?'var(--text4)':'var(--green)'}">${e.actual}</span>
+    </div>`;
+  }).join('');
+}
+function filterCal(f,el){
+  document.querySelectorAll('.cal-filter-btn').forEach(b=>{b.style.background='none';b.style.borderColor='var(--border)';b.style.color='var(--text3)';});
+  el.style.background='var(--cyan3)'; el.style.borderColor='var(--border2)'; el.style.color='var(--cyan)';
+  renderCalendar(f);
+}
+
+// ===== ALERTS PAGE =====
+const activeAlertsList=[];
+let alertIdCounter=1;
+function addAlert(){
+  const pair=document.getElementById('alertPair').value;
+  const type=document.getElementById('alertType').value;
+  const price=parseFloat(document.getElementById('alertPrice')?.value)||0;
+  const sound=document.getElementById('alertSound')?.checked;
+  const toast=document.getElementById('alertToast')?.checked;
+  const typeLabels={price_above:`${pair} > ${price}`,price_below:`${pair} < ${price}`,
+    rsi_ob:`RSI تشبع شراء على ${pair}`,rsi_os:`RSI تشبع بيع على ${pair}`,
+    macd_cross_up:`MACD تقاطع صاعد على ${pair}`,macd_cross_dn:`MACD تقاطع هابط على ${pair}`};
+  activeAlertsList.push({id:alertIdCounter++,pair,type,price,sound,toast,label:typeLabels[type],active:true,created:new Date().toLocaleTimeString()});
+  renderAlertsList();
+  showToast(`🔔 تنبيه مُضاف: ${typeLabels[type]}`);
+}
+function removeAlert(id){
+  const idx=activeAlertsList.findIndex(a=>a.id===id);
+  if(idx>-1){activeAlertsList.splice(idx,1);renderAlertsList();}
+}
+function renderAlertsList(){
+  const el=document.getElementById('alertsList'); if(!el) return;
+  const countEl=document.getElementById('alertCount');
+  if(countEl) countEl.textContent=activeAlertsList.length;
+  if(!activeAlertsList.length){
+    el.innerHTML='<div style="color:var(--text4);font-size:11px;text-align:center;padding:20px">لا توجد تنبيهات نشطة</div>';
+    return;
+  }
+  const impC={price_above:'var(--cyan)',price_below:'var(--red)',rsi_ob:'var(--red)',rsi_os:'var(--green)',macd_cross_up:'var(--green)',macd_cross_dn:'var(--red)'};
+  el.innerHTML=activeAlertsList.map(a=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span style="width:8px;height:8px;background:${impC[a.type]||'var(--cyan)'};border-radius:50%;flex-shrink:0;animation:pulse 2s infinite"></span>
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:700;color:var(--text)">${a.label}</div>
+        <div style="font-size:9px;color:var(--text4)">أُضيف: ${a.created} ${a.sound?'🔊':''} ${a.toast?'💬':''}</div>
+      </div>
+      <button onclick="removeAlert(${a.id})" style="background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.2);color:var(--red);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer">×</button>
+    </div>`).join('');
+}
+function addAlertHistory(msg,color='var(--cyan)'){
+  const el=document.getElementById('alertHistory'); if(!el) return;
+  const now=new Date().toLocaleTimeString();
+  const existing=el.innerHTML.includes('لا يوجد')?'':'';
+  el.innerHTML=`<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px">
+    <span style="color:${color};flex-shrink:0">🔔</span>
+    <div><div style="color:var(--text)">${msg}</div><div style="color:var(--text4);font-size:9px">${now}</div></div>
+  </div>`+(el.innerHTML.includes('لا يوجد')?'':el.innerHTML);
+}
+function toggleQuickAlert(type,el){
+  // Update activeAlerts object used by checkAlerts
+  if(typeof activeAlerts!=='undefined') activeAlerts[type.replace('-','')]=el.checked;
+}
+function testAlertSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [880,1100,880].forEach((freq,i)=>{
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=freq;gain.gain.setValueAtTime(0.3,ctx.currentTime+i*0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+0.12);
+      osc.start(ctx.currentTime+i*0.15);osc.stop(ctx.currentTime+i*0.15+0.12);
+    });
+  }catch(e){}
+  showToast('🔔 اختبار صوت التنبيه!');
+}
+
+// ===== LAB — Backtesting + Bot integration =====
+let labChartInstance=null;
+function runBacktest(){
+  const btn=document.getElementById('backtestBtn');
+  const resultsEl=document.getElementById('labResults');
+  btn.textContent='⏳ جارٍ الاختبار...'; btn.disabled=true;
+
+  setTimeout(()=>{
+    // Simulate backtest using actual candle data + selected indicators
+    const candles=ST.candles.length>50?ST.candles:Array.from({length:200},(_,i)=>{
+      const p=1.08+(Math.random()-0.5)*0.05; return {o:p,h:p+0.001,l:p-0.001,c:p+(Math.random()-0.5)*0.0008,v:500};
+    });
+    const closes=candles.map(c=>c.c);
+    const rsiVals=CH_rsi(closes,14);
+    const macdRes=CH_macd(closes);
+    const ema20=CH_ema(closes,20);
+    const ema50=CH_ema(closes,50);
+    const riskPct=parseFloat(document.getElementById('labRisk')?.value)||2;
+    const rrTarget=parseFloat(document.getElementById('labRR')?.value)||2;
+    const useRSI=document.getElementById('lab-rsi')?.checked;
+    const useMACD=document.getElementById('lab-macd')?.checked;
+    const useEMA=document.getElementById('lab-ema')?.checked;
+
+    let equity=10000, wins=0, losses=0, totalTrades=0;
+    const equityCurve=[equity];
+    const trades=[];
+
+    for(let i=52;i<candles.length-1;i++){
+      const rsi=rsiVals[i-1]||50;
+      const macdH=macdRes.h[i]||0, macdHP=macdRes.h[i-1]||0;
+      const e20=ema20[i],e50=ema50[i],price=closes[i];
+      let buyScore=0;
+      if(useRSI&&rsi<38) buyScore+=2;
+      if(useRSI&&rsi>62) buyScore-=2;
+      if(useMACD&&macdH>0&&macdHP<0) buyScore+=2;
+      if(useMACD&&macdH<0&&macdHP>0) buyScore-=2;
+      if(useEMA&&price>e20&&e20>e50) buyScore+=1;
+      if(useEMA&&price<e20&&e20<e50) buyScore-=1;
+
+      if(Math.abs(buyScore)>=3){
+        const dir=buyScore>0?'buy':'sell';
+        const sl=dir==='buy'?price*0.997:price*1.003;
+        const tp=dir==='buy'?price*(1+0.003*rrTarget):price*(1-0.003*rrTarget);
+        const risk=equity*(riskPct/100);
+        const exitPrice=candles[i+1]?.c||price;
+        const win=(dir==='buy'&&exitPrice>price)||(dir==='sell'&&exitPrice<price);
+        const pnl=win?risk*rrTarget:-risk;
+        equity+=pnl; totalTrades++;
+        if(win) wins++; else losses++;
+        equityCurve.push(equity);
+        trades.push({dir,entry:price.toFixed(5),pnl:pnl.toFixed(2),win});
+      }
+    }
+
+    const winRate=totalTrades>0?(wins/totalTrades*100).toFixed(1):0;
+    const netPnl=(equity-10000).toFixed(0);
+    const maxDD=(Math.min(...equityCurve)-10000).toFixed(0);
+    const profitFactor=losses>0?((wins*rrTarget)/losses).toFixed(2):'∞';
+
+    resultsEl.innerHTML=`
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+        <div class="stat-card sc-green"><div class="stat-label">NET P&L</div><div class="stat-val ${netPnl>=0?'up':'dn'}">${netPnl>=0?'+':''}$${netPnl}</div></div>
+        <div class="stat-card sc-gold"><div class="stat-label">WIN RATE</div><div class="stat-val" style="color:var(--gold)">${winRate}%</div></div>
+        <div class="stat-card sc-cyan"><div class="stat-label">TRADES</div><div class="stat-val" style="color:var(--cyan)">${totalTrades}</div></div>
+        <div class="stat-card sc-red"><div class="stat-label">MAX DD</div><div class="stat-val dn">$${maxDD}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);font-family:var(--font-hud)">PROFIT FACTOR</div>
+          <div style="font-size:18px;font-weight:700;color:var(--purple)">${profitFactor}</div>
+        </div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);font-family:var(--font-hud)">WINS / LOSSES</div>
+          <div style="font-size:18px;font-weight:700"><span style="color:var(--green)">${wins}</span><span style="color:var(--text4)"> / </span><span style="color:var(--red)">${losses}</span></div>
+        </div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--text3);font-family:var(--font-hud)">FINAL EQUITY</div>
+          <div style="font-size:18px;font-weight:700;color:var(--cyan)">$${equity.toFixed(0)}</div>
+        </div>
+      </div>`;
+
+    // Draw equity curve
+    if(labChartInstance){labChartInstance.destroy();}
+    const ctx=document.getElementById('labChart')?.getContext('2d');
+    if(ctx&&equityCurve.length>1){
+      labChartInstance=new Chart(ctx,{type:'line',data:{labels:equityCurve.map((_,i)=>i),datasets:[{data:equityCurve,borderColor:equity>10000?'rgba(0,255,136,.8)':'rgba(255,51,102,.8)',borderWidth:1.5,fill:true,backgroundColor:equity>10000?'rgba(0,255,136,.07)':'rgba(255,51,102,.07)',pointRadius:0,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{grid:{color:'rgba(0,212,255,.05)'},ticks:{color:'#5a8299',font:{size:9},callback:v=>'$'+v.toFixed(0)}}}}});
+    }
+    // Store last strategy for bot
+    window._lastLabStrategy={useRSI,useMACD,useEMA,riskPct,rrTarget,winRate,netPnl};
+    btn.textContent='▶ تشغيل الاختبار'; btn.disabled=false;
+    showToast(`✅ الاختبار اكتمل — ${totalTrades} صفقة | ${winRate}% فوز`,'t-buy');
+  },600);
+}
+function applyStratToBot(){
+  if(!window._lastLabStrategy){showToast('⚠️ شغّل الاختبار أولاً!');return;}
+  const s=window._lastLabStrategy;
+  showToast(`🤖 تم تطبيق الاستراتيجية على البوت | Win Rate: ${s.winRate}%`,'t-buy');
+  addBotLog(`Strategy applied from Lab: RSI=${s.useRSI?'✓':'✗'} MACD=${s.useMACD?'✓':'✗'} EMA=${s.useEMA?'✓':'✗'} | R:R=${s.rrTarget}`,'info');
+}
+
+// ===== SMART ALERTS CHECK =====
+const activeAlerts={rsi:true,ma:true,loss:true,margin:true,'rsi-ob':true,'rsi-os':true,macd:true};
+let lastAlertTime=0;
+function checkAlerts(pair){
+  const now=Date.now(); if(now-lastAlertTime<10000) return;
+  if(!ST.candles||ST.candles.length<15) return;
+  const closes=ST.candles.map(c=>c.c);
+  const rsiArr=CH_rsi(closes,14);
+  const rsi=rsiArr.filter(v=>v!==null).pop()||50;
+  if(activeAlerts['rsi-ob']&&rsi>75){
+    lastAlertTime=now;
+    const msg=`⚠️ ${pair} — RSI=${rsi.toFixed(1)} تشبع شراء!`;
+    showToast(msg,'t-sell'); addAlertHistory(msg,'var(--red)');
+    playAlertSound(880);
+  } else if(activeAlerts['rsi-os']&&rsi<25){
+    lastAlertTime=now;
+    const msg=`⚠️ ${pair} — RSI=${rsi.toFixed(1)} تشبع بيع!`;
+    showToast(msg,'t-buy'); addAlertHistory(msg,'var(--green)');
+    playAlertSound(440);
+  }
+}
+function playAlertSound(freq=880){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.frequency.value=freq;gain.gain.setValueAtTime(0.25,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.4);
+    osc.start();osc.stop(ctx.currentTime+0.4);
+  }catch(e){}
 }
 
 // ===== SETTINGS =====
 function switchSettings(tab,el){
   S.settingsTab=tab;
   document.querySelectorAll('.sn-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-  renderSettings(tab);
+  el.classList.add('active'); renderSettings(tab);
 }
 function renderSettings(tab){
-  const c=document.getElementById('settingsContent');
+  const c=document.getElementById('settingsContent'); if(!c) return;
   if(tab==='api'){
     c.innerHTML=`<div class="s-section-title">API CONNECTIONS</div>
       ${[['🟡','Binance','binance','Disconnected'],['🔵','MetaTrader 5','mt5','Disconnected'],['🟠','Bybit','bybit','Disconnected'],['⚪','Interactive Brokers','ib','Disconnected'],['🟢','OANDA','oanda','Connected']].map(([icon,name,id,status])=>`
-      <div class="api-key-row">
-        <span class="api-exchange-icon">${icon}</span>
-        <div style="flex:1">
-          <div class="api-exchange-name">${name}</div>
-          <div class="api-exchange-status ${status==='Connected'?'api-connected':'api-disconnected'}">● ${status}</div>
-        </div>
-        <input class="api-inp" placeholder="API Key" id="apiKey-${id}" style="max-width:140px">
+      <div class="api-key-row"><span class="api-exchange-icon">${icon}</span>
+        <div style="flex:1"><div class="api-exchange-name">${name}</div><div class="api-exchange-status ${status==='Connected'?'api-connected':'api-disconnected'}">● ${status}</div></div>
+        <input class="api-inp" placeholder="API Key" style="max-width:140px">
         <input class="api-inp" placeholder="Secret" type="password" style="max-width:120px">
         <button class="api-connect-btn" onclick="connectAPI('${name}',this)">${LANG==='ar'?'ربط':'Connect'}</button>
       </div>`).join('')}`;
@@ -2445,71 +2660,114 @@ function renderSettings(tab){
         <div class="theme-swatch" style="background:linear-gradient(135deg,#0a0010,#1a0030)" onclick="selectTheme(this)"><span style="color:#8b5cf6">Purple</span></div>
       </div>
       <div class="s-section-title">LAYOUT</div>
-      ${[['compact-mode','Compact Mode','Reduce spacing for more data'],['show-volume','Show Volume','Display volume bars on chart'],['show-indicators','Show Indicators','MA/RSI overlay on chart'],['dark-candles','Dark Candles','Use darker candle colors']].map(([id,label,sub])=>`
-      <div class="s-toggle-row"><div><div class="s-toggle-label">${label}</div><div class="s-toggle-sub">${sub}</div></div><label class="toggle-sw"><input type="checkbox" ${id==='show-volume'||id==='show-indicators'?'checked':''}><div class="toggle-sl"></div></label></div>`).join('')}`;
+      ${[['show-volume','Show Volume','Display volume bars on chart'],['show-indicators','Show Indicators','MA/RSI on chart'],['dark-candles','Dark Candles','Use dark candle body colors']].map(([id,l,s])=>`
+      <div class="s-toggle-row"><div><div class="s-toggle-label">${l}</div><div class="s-toggle-sub">${s}</div></div><label class="toggle-sw"><input type="checkbox" ${id==='show-volume'||id==='show-indicators'?'checked':''}><div class="toggle-sl"></div></label></div>`).join('')}`;
   } else if(tab==='notif'){
     c.innerHTML=`<div class="s-section-title">NOTIFICATIONS</div>
       ${[['Price Alerts','Get notified when price hits target','checked'],['AI Signals','New AI trading signals','checked'],['Bot Trades','Bot execution notifications','checked'],['News Alerts','High-impact news events',''],['Risk Warnings','Margin & risk alerts','checked']].map(([l,s,ch])=>`
       <div class="s-toggle-row"><div><div class="s-toggle-label">${l}</div><div class="s-toggle-sub">${s}</div></div><label class="toggle-sw"><input type="checkbox" ${ch}><div class="toggle-sl"></div></label></div>`).join('')}`;
   } else if(tab==='security'){
     c.innerHTML=`<div class="s-section-title">SECURITY</div>
-      <div class="f-grp" style="margin-bottom:16px"><div class="f-lbl">CURRENT PASSWORD</div><input class="f-inp" type="password" placeholder="••••••••"></div>
-      <div class="f-grp" style="margin-bottom:16px"><div class="f-lbl">NEW PASSWORD</div><input class="f-inp" type="password" placeholder="••••••••"></div>
-      <button onclick="showToast('✅ Password updated!')" style="padding:10px 20px;background:var(--cyan3);border:1px solid var(--border2);color:var(--cyan);border-radius:6px;cursor:pointer;font-family:var(--font-ui);font-weight:700">Update Password</button>
+      <div class="f-grp" style="margin-bottom:14px"><div class="f-lbl">CURRENT PASSWORD</div><input class="f-inp" type="password" placeholder="••••••••"></div>
+      <div class="f-grp" style="margin-bottom:14px"><div class="f-lbl">NEW PASSWORD</div><input class="f-inp" type="password" placeholder="••••••••"></div>
+      <button onclick="showToast('✅ Password updated!')" style="padding:9px 18px;background:var(--cyan3);border:1px solid var(--border2);color:var(--cyan);border-radius:6px;cursor:pointer;font-weight:700">Update Password</button>
       <div class="s-divider"></div>
       <div class="s-section-title">2FA AUTHENTICATION</div>
-      <div class="s-toggle-row"><div><div class="s-toggle-label">Two-Factor Auth</div><div class="s-toggle-sub">Secure login with authenticator app</div></div><label class="toggle-sw"><input type="checkbox"><div class="toggle-sl"></div></label></div>
-      <div class="s-toggle-row"><div><div class="s-toggle-label">Login Notifications</div><div class="s-toggle-sub">Email on new login</div></div><label class="toggle-sw"><input type="checkbox" checked><div class="toggle-sl"></div></label></div>`;
+      <div class="s-toggle-row"><div><div class="s-toggle-label">Two-Factor Auth</div><div class="s-toggle-sub">Secure your account</div></div><label class="toggle-sw"><input type="checkbox"><div class="toggle-sl"></div></label></div>`;
   } else if(tab==='general'){
     c.innerHTML=`<div class="s-section-title">GENERAL SETTINGS</div>
-      <div class="f-grp" style="margin-bottom:12px"><div class="f-lbl">DEFAULT CURRENCY</div><select class="f-inp" style="cursor:pointer"><option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option></select></div>
-      <div class="f-grp" style="margin-bottom:12px"><div class="f-lbl">TIMEZONE</div><select class="f-inp" style="cursor:pointer"><option>UTC+3 (Riyadh)</option><option>UTC+4 (Dubai)</option><option>UTC+0 (London)</option><option>UTC-5 (New York)</option></select></div>
-      <div class="f-grp" style="margin-bottom:12px"><div class="f-lbl">DATE FORMAT</div><select class="f-inp" style="cursor:pointer"><option>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select></div>
-      ${[['Sound Alerts','Play sound on trade execution','checked'],['Auto-Refresh','Auto refresh market data','checked'],['Confirm Trades','Confirm before executing','checked']].map(([l,s,ch])=>`
+      <div class="f-grp" style="margin-bottom:12px"><div class="f-lbl">DEFAULT CURRENCY</div><select class="f-inp"><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+      <div class="f-grp" style="margin-bottom:12px"><div class="f-lbl">TIMEZONE</div><select class="f-inp"><option>UTC+3 (Riyadh)</option><option>UTC+4 (Dubai)</option><option>UTC+0 (London)</option><option>UTC-5 (New York)</option></select></div>
+      <div class="f-grp" style="margin-bottom:12px"><div class="f-lbl">DATE FORMAT</div><select class="f-inp"><option>DD/MM/YYYY</option><option>MM/DD/YYYY</option></select></div>
+      ${[['Sound Alerts','Play sound on trade execution','checked'],['Auto-Refresh','Auto refresh market data','checked'],['Confirm Trades','Show confirm dialog','checked']].map(([l,s,ch])=>`
       <div class="s-toggle-row"><div><div class="s-toggle-label">${l}</div><div class="s-toggle-sub">${s}</div></div><label class="toggle-sw"><input type="checkbox" ${ch}><div class="toggle-sl"></div></label></div>`).join('')}`;
   }
 }
 function connectAPI(name,btn){
-  btn.textContent=LANG==='ar'?'جارٍ الربط...':'Connecting...';
-  setTimeout(()=>{btn.textContent=LANG==='ar'?'✓ متصل':'✓ Connected';btn.style.color='var(--green)';btn.style.borderColor='rgba(0,255,136,.3)';showToast(`✅ Connected to ${name}`);},1800);
+  btn.textContent='جارٍ...';
+  setTimeout(()=>{btn.textContent='✓ متصل';btn.style.color='var(--green)';btn.style.borderColor='rgba(0,255,136,.3)';showToast(`✅ Connected to ${name}`);},1800);
 }
-function selectTheme(el){document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');showToast(LANG==='ar'?'تم تطبيق الثيم':'Theme Applied');}
+function selectTheme(el){document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('selected'));el.classList.add('selected');showToast('تم تطبيق الثيم');}
 
 // ===== TOAST =====
 function showToast(msg,cls=''){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast show '+(cls||'');
+  t.textContent=msg; t.className='toast show '+(cls||'');
   setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ===== BOT — upgraded with strategy integration =====
+function addBotLog(msg,type='info'){
+  const now=new Date();
+  S.botLogs.unshift({time:now.toLocaleTimeString(),msg,type});
+  if(S.botLogs.length>50) S.botLogs.pop();
+  const el=document.getElementById('bot-log');
+  if(el&&el.style.display!=='none') renderBotLog();
+}
+
+// ===== SWITCHPAGE — include new pages =====
+function switchPage(id,el){
+  document.querySelectorAll('.full-page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
+  document.getElementById('page-dashboard').style.display='none';
+  if(id==='dashboard'){
+    document.getElementById('page-dashboard').style.display='flex';
+    setTimeout(()=>{CH_dirty=true;},50);
+  } else {
+    const pg=document.getElementById('page-'+id);
+    if(pg){pg.style.display='flex';pg.classList.add('active');}
+    if(id==='portfolio') setTimeout(initPortCharts,80);
+    if(id==='performance') setTimeout(()=>{initPerfCharts();renderTradeHistory('all');},80);
+    if(id==='risk') {setTimeout(initRiskCharts,80);renderRiskContent();}
+    if(id==='settings') renderSettings(S.settingsTab||'api');
+    if(id==='news') renderNews();
+    if(id==='calendar') renderCalendar();
+    if(id==='alerts') renderAlertsList();
+    if(id==='lab'){}
+  }
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else document.querySelectorAll('.nav-tab').forEach(t=>{if(t.onclick&&t.onclick.toString().includes("'"+id+"'"))t.classList.add('active');});
 }
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',()=>{
-  // Init chart
   CH_gen('EUR/USD');
   setTimeout(()=>{ CH_bindEvents(); CH_initIndPanel(); requestAnimationFrame(CH_frame); },80);
-  // live chart tick
+
   setInterval(CH_liveTick, 1500);
+  setInterval(()=>{ tickPrices(); renderOPP(); }, 2000);
+  setInterval(()=>checkAlerts(S.pair), 12000);
+  setInterval(renderSignals, 30000);
 
   renderOPP();
   renderSignals();
+  buildTradeHistory();
   calcRisk();
+  calcLot();
   renderSettings('api');
+  startClock();
+
   const cp=S.prices['EUR/USD'];
-  document.getElementById('fSL').value=(cp.p-0.005).toFixed(5);
-  document.getElementById('fTP').value=(cp.p+0.0075).toFixed(5);
-  // Live prices tick
-  setInterval(()=>{tickPrices();renderOPP();},2000);
-  // Portfolio balance
+  const slEl=document.getElementById('fSL'), tpEl=document.getElementById('fTP');
+  if(slEl) slEl.value=(cp.p-0.005).toFixed(5);
+  if(tpEl) tpEl.value=(cp.p+0.0075).toFixed(5);
+  calcRisk();
+
   setInterval(()=>{
     const b=28470+((Math.random()-.4)*50);
     const el=document.getElementById('pmBalance');
     if(el) el.textContent='$'+b.toFixed(2);
   },5000);
-  // Resize
-  window.addEventListener('resize',()=>{CH_dirty=true;});
-  // Open forex by default
+
+  window.addEventListener('resize',()=>{ CH_dirty=true; });
   const af=document.getElementById('arr-forex');
   if(af) af.classList.add('open');
+
+  // Close indicator panel on outside click
+  document.addEventListener('click',e=>{
+    const btn=document.getElementById('indBtn'),panel=document.getElementById('indPanel');
+    if(panel&&btn&&!btn.contains(e.target)&&!panel.contains(e.target)) panel.classList.remove('open');
+  });
 });
 </script>
 </body>
