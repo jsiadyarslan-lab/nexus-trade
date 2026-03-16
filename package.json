@@ -1,0 +1,9 @@
+{
+  "name": "nexus-trade",
+  "version": "3.0.0",
+  "description": "NEXUS TRADE - AI Trading Platform",
+  "scripts": {
+    "start": "npx serve@14 . --listen $PORT --single"
+  },
+  "engines": { "node": ">=18" }
+}

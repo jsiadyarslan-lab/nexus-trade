@@ -1235,7 +1235,7 @@ function CH_layout(){
   const prices=ST.barsData.flatMap(b=>[b.h,b.l]);
   let pMin=Math.min(...prices),pMax=Math.max(...prices);
   const r=pMax-pMin||pMin*0.01;
-  ST.pMin=pMin-r*0.06; ST.pMax=pMax+r*0.1;
+  ST.pMin=pMin-r*0.18; ST.pMax=pMax+r*0.18;
   const cW=ST.W-CFG.PW;
   ST.mH=ST.H-CFG.TH-CFG.SUB-1;
   ST.barSpacing=cW/Math.max(1,ST.barsData.length);
@@ -1286,6 +1286,24 @@ function CH_drawMain(){
     pg+=pStep;
   }
   const tStep=Math.max(1,Math.floor(bars.length/8));
+  // ── Trading Sessions background ────────────────────────
+  bars.forEach((b,i)=>{
+    const hr=new Date(b.t).getUTCHours();
+    let sessionColor=null;
+    if(hr>=0&&hr<8)   sessionColor='rgba(139,92,246,0.04)';   // Tokyo — purple
+    if(hr>=8&&hr<16)  sessionColor='rgba(0,212,255,0.05)';    // London — cyan
+    if(hr>=13&&hr<21) sessionColor='rgba(245,197,24,0.04)';   // New York — gold
+    if(sessionColor){
+      const x=xOfBar(i)-ST.barSpacing/2;
+      ctx.fillStyle=sessionColor;
+      ctx.fillRect(x,0,ST.barSpacing,mH);
+    }
+  });
+  // Session legend
+  [['Tokyo','rgba(139,92,246,0.7)',0],['London','rgba(0,212,255,0.7)',55],['New York','rgba(245,197,24,0.7)',115]].forEach(([name,col,ox])=>{
+    ctx.fillStyle=col; ctx.font='8px JetBrains Mono'; ctx.textAlign='left';
+    ctx.fillText('■ '+name, ox+5, 14);
+  });
   for(let i=0;i<bars.length;i+=tStep){
     const x=xOfBar(i);
     ctx.strokeStyle=CFG.GRID; ctx.lineWidth=0.5;
@@ -1298,7 +1316,7 @@ function CH_drawMain(){
   const maxV=Math.max(...bars.map(b=>b.v),1);
   bars.forEach((b,i)=>{
     const x=xOfBar(i),vH=(b.v/maxV)*mH*CFG.VOL;
-    ctx.fillStyle=b.c>=b.o?'rgba(38,166,154,0.2)':'rgba(239,83,80,0.2)';
+    ctx.fillStyle=b.c>=b.o?'rgba(38,166,154,0.45)':'rgba(239,83,80,0.45)';
     ctx.fillRect(x-ST.barW/2,CFG.SUB+mH-vH,ST.barW,vH);
   });
   // bollinger
@@ -1372,17 +1390,42 @@ function CH_drawMain(){
   }
   // drawings
   CH_renderDrawings(ctx,cW,dp);
-  // current price line
+  // ── Last candle highlight + NOW line ──────────────────
   const last=bars[bars.length-1];
   if(last){
+    const lx=xOfBar(bars.length-1);
+    // Vertical "NOW" glow line on last candle
+    ctx.strokeStyle='rgba(0,212,255,0.18)';ctx.lineWidth=ST.barW+2;
+    ctx.beginPath();ctx.moveTo(lx,0);ctx.lineTo(lx,mH);ctx.stroke();
+    // NOW label at top
+    ctx.fillStyle='rgba(0,212,255,0.6)';ctx.font='bold 8px JetBrains Mono';ctx.textAlign='center';
+    ctx.fillText('NOW',lx,10);
+
+    // Horizontal current price dashed line
     const ly=pToY(last.c);
     ctx.setLineDash([4,5]);ctx.strokeStyle='rgba(0,212,255,0.55)';ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(0,ly);ctx.lineTo(cW,ly);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='rgba(0,212,255,0.9)';ctx.fillRect(cW,ly-9,CFG.PW,18);
-    ctx.fillStyle='#020810';ctx.font='bold 9px JetBrains Mono';ctx.textAlign='center';
+
+    // Price badge on Y axis — green if up, red if down
+    const prevC=bars.length>1?bars[bars.length-2].c:last.c;
+    const isUp=last.c>=prevC;
+    ctx.fillStyle=isUp?'rgba(38,166,154,0.95)':'rgba(239,83,80,0.95)';
+    ctx.fillRect(cW,ly-9,CFG.PW,18);
+    ctx.fillStyle='#fff';ctx.font='bold 9px JetBrains Mono';ctx.textAlign='center';
     ctx.fillText(last.c.toFixed(dp),cW+CFG.PW/2,ly+3);
-    document.getElementById('chPrice').textContent=last.c.toFixed(dp);
-    document.getElementById('tradePriceLive').textContent=last.c.toFixed(dp);
+
+    // Update header
+    const chP=document.getElementById('chPrice');
+    const chChg=document.getElementById('chChange');
+    if(chP) chP.textContent=last.c.toFixed(dp);
+    if(chP) chP.className='ch-price '+(isUp?'up':'dn');
+    if(chChg){
+      const pct=((last.c-prevC)/prevC*100);
+      chChg.textContent=(isUp?'▲ +':'▼ ')+pct.toFixed(2)+'%';
+      chChg.className='ch-change '+(isUp?'up':'dn');
+    }
+    const tpl=document.getElementById('tradePriceLive');
+    if(tpl) tpl.textContent=last.c.toFixed(dp);
   }
   // crosshair
   if(ST.mx>=0&&ST.mx<=cW&&ST.my>=CFG.SUB&&ST.my<=CFG.SUB+mH){
@@ -1437,27 +1480,51 @@ function CH_drawSub(){
   const lbl=document.getElementById('subLabel');
   if(ST.sub==='rsi'){
     const rsi=CH_rsi(cls).slice(ST.startIdx,ST.startIdx+bars.length);
-    [[30,'rgba(239,83,80,0.15)'],[50,'rgba(100,140,170,0.1)'],[70,'rgba(239,83,80,0.15)']].forEach(([lv,c])=>{
+    // Overbought/Oversold fill zones
+    ctx.fillStyle='rgba(239,83,80,0.08)';
+    ctx.fillRect(0,0,cW,H*0.3);           // above 70
+    ctx.fillStyle='rgba(38,166,154,0.08)';
+    ctx.fillRect(0,H*0.7,cW,H*0.3);       // below 30
+    // Level lines
+    [[30,'rgba(239,83,80,0.4)'],[50,'rgba(100,140,170,0.2)'],[70,'rgba(239,83,80,0.4)']].forEach(([lv,c])=>{
       const y=H*(1-lv/100);ctx.strokeStyle=c;ctx.lineWidth=0.8;ctx.setLineDash([3,4]);
       ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cW,y);ctx.stroke();ctx.setLineDash([]);
-      ctx.fillStyle='rgba(80,120,150,0.6)';ctx.font='8px JetBrains Mono';ctx.textAlign='left';ctx.fillText(lv,cW+3,y+3);
+      ctx.fillStyle='rgba(160,180,200,0.7)';ctx.font='8px JetBrains Mono';ctx.textAlign='left';
+      ctx.fillText(lv,cW+3,y+3);
     });
+    // Single continuous RSI line (neutral color) — much faster
     let lastR=50;
-    ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.strokeStyle='rgba(0,212,255,0.85)';ctx.lineWidth=1.4;
+    let started=false;
     rsi.forEach((v,i)=>{
-      if(v===null)return;lastR=v;
+      if(v===null)return; lastR=v;
       const x=xB(i),y=H*(1-v/100);
-      ctx.strokeStyle=v>70?CFG.DN:v<30?CFG.UP:'rgba(0,212,255,0.8)';
-      ctx.beginPath();
-      if(i===0||rsi[i-1]===null){if(i>0)ctx.stroke();ctx.beginPath();ctx.moveTo(x,y);}
-      else{ctx.moveTo(xB(i-1),H*(1-rsi[i-1]/100));ctx.lineTo(x,y);}
-      ctx.stroke();
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
     });
+    ctx.stroke();
+    // Overbought segment overlay in red
+    ctx.beginPath();ctx.strokeStyle='rgba(239,83,80,0.9)';ctx.lineWidth=1.8;
+    started=false;
+    rsi.forEach((v,i)=>{
+      if(v===null||v<=70){started=false;return;}
+      const x=xB(i),y=H*(1-v/100);
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // Oversold segment overlay in green
+    ctx.beginPath();ctx.strokeStyle='rgba(38,166,154,0.9)';ctx.lineWidth=1.8;
+    started=false;
+    rsi.forEach((v,i)=>{
+      if(v===null||v>=30){started=false;return;}
+      const x=xB(i),y=H*(1-v/100);
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
     if(lbl)lbl.textContent=`RSI(14): ${lastR.toFixed(1)}`;
     const ry=H*(1-lastR/100);
-    ctx.fillStyle=lastR>70?CFG.DN:lastR<30?CFG.UP:'rgba(0,212,255,0.8)';
-    ctx.fillRect(cW+2,ry-7,CFG.PW-4,14);
-    ctx.fillStyle='#030810';ctx.font='bold 9px JetBrains Mono';ctx.textAlign='center';
+    const rsiColor=lastR>70?CFG.DN:lastR<30?CFG.UP:'rgba(0,212,255,0.9)';
+    ctx.fillStyle=rsiColor;ctx.fillRect(cW+2,ry-7,CFG.PW-4,14);
+    ctx.fillStyle='#fff';ctx.font='bold 9px JetBrains Mono';ctx.textAlign='center';
     ctx.fillText(lastR.toFixed(1),cW+CFG.PW/2,ry+3);
   } else if(ST.sub==='macd'){
     const {m,s,h}=CH_macd(cls);
@@ -1531,17 +1598,29 @@ function CH_frame(){
   requestAnimationFrame(CH_frame);
 }
 
-// ── LIVE TICK ─────────────────────────────────────────────
+// ── LIVE TICK — synced with S.prices (single source of truth) ────
 function CH_liveTick(){
-  if(!ST.candles.length)return;
-  const cp=S.prices[S.pair];if(!cp)return;
-  const dp=cp.d||5,last=ST.candles[ST.candles.length-1];
-  last.c=+(Math.max(0.001,last.c+(Math.random()-0.49)*last.c*0.0004)).toFixed(dp);
-  last.h=Math.max(last.h,last.c);last.l=Math.min(last.l,last.c);
-  if(Math.random()<0.06){
-    const o=last.c,c=+(o+(Math.random()-0.49)*o*0.0005).toFixed(dp);
-    ST.candles.push({o,h:Math.max(o,c)+Math.random()*Math.abs(c-o)*0.3,l:Math.min(o,c)-Math.random()*Math.abs(c-o)*0.3,c,v:Math.floor(50+Math.random()*500),t:Date.now()});
-    if(ST.candles.length>500)ST.candles.shift();
+  if(!ST.candles.length) return;
+  const cp=S.prices[S.pair]; if(!cp) return;
+  const dp=cp.d||5;
+  const last=ST.candles[ST.candles.length-1];
+
+  // Soft-follow S.prices so chart price never drifts far from watchlist price
+  const drift=(cp.p-last.c)*0.15;
+  const noise=last.c*(Math.random()-0.5)*0.0002;
+  last.c=+(Math.max(0.0001,last.c+drift+noise)).toFixed(dp);
+  last.h=Math.max(last.h,last.c);
+  last.l=Math.min(last.l,last.c);
+
+  // New candle ~every 20 ticks
+  if(Math.random()<0.05){
+    const o=last.c, move=o*0.0005;
+    const c=+(o+(Math.random()-0.49)*move).toFixed(dp);
+    ST.candles.push({o,c,
+      h:Math.max(o,c)+Math.random()*Math.abs(c-o)*0.4,
+      l:Math.min(o,c)-Math.random()*Math.abs(c-o)*0.4,
+      v:Math.floor(100+Math.random()*600),t:Date.now()});
+    if(ST.candles.length>500) ST.candles.shift();
     CH_buildHA();
   }
   CH_dirty=true;
@@ -1645,9 +1724,9 @@ function renderOPP(){
   const dp=(pair)=>S.prices[pair]?.d||5;
   // For pairs with many decimals (XAU, BTC), abbreviate entry/SL/TP display
   const fmt=(val,pair)=>{
-    const d=dp(pair);
-    if(pair.includes('BTC')||pair.includes('ETH')) return val.toFixed(0);
-    if(pair.includes('XAU')||pair.includes('XAG')) return val.toFixed(2);
+    if(pair.includes('BTC')||pair.includes('ETH')||pair.includes('SPX')||pair.includes('NAS')||pair.includes('GER'))
+      return Math.round(val).toLocaleString();
+    if(pair.includes('XAU')||pair.includes('XAG')||pair.includes('XPT')) return val.toFixed(2);
     if(pair.includes('JPY')) return val.toFixed(3);
     return val.toFixed(5);
   };
@@ -1678,13 +1757,13 @@ function tickPrices(){
     const el=document.getElementById('pw'+i);
     if(!el) return;
     const info=S.prices[pair];
-    el.textContent=info.p>=1000?info.p.toFixed(0):info.p.toFixed(info.d);
+    el.textContent=info.p>=1000?Math.round(info.p).toLocaleString():info.p.toFixed(info.d);
   });
   // Topbar
   document.getElementById('tb0').textContent=S.prices['EUR/USD'].p.toFixed(5);
   document.getElementById('tb1').textContent=S.prices['GBP/USD'].p.toFixed(5);
   document.getElementById('tb2').textContent=S.prices['XAU/USD'].p.toFixed(2);
-  document.getElementById('tb3').textContent=S.prices['BTC/USD'].p.toFixed(0);
+  document.getElementById('tb3').textContent=Math.round(S.prices['BTC/USD'].p).toLocaleString();
   // Active pair price
   const cp=S.prices[S.pair];
   const cpDp=S.prices[S.pair]?.d||5;
@@ -1703,13 +1782,46 @@ function setMode(mode){
 }
 function setLev(lev,el){S.lev=lev;document.querySelectorAll('.lev-btn').forEach(b=>b.classList.remove('act'));el.classList.add('act');}
 function calcRisk(){
-  const vol=parseFloat(document.getElementById('fVol').value)||0.1;
-  const risk=(vol*10000*0.008).toFixed(2);
-  const reward=(risk*1.5).toFixed(2);
-  document.getElementById('rbRisk').textContent='-$'+risk;
-  document.getElementById('rbReward').textContent='+$'+reward;
-  document.getElementById('rbRR').textContent='1:'+(reward/risk).toFixed(1);
-  document.getElementById('rbMargin').textContent='$'+(vol*S.prices[S.pair]?.p*1000/100).toFixed(2);
+  const vol   = parseFloat(document.getElementById('fVol')?.value) || 0.1;
+  const price = S.prices[S.pair]?.p || 1.0843;
+  const sl    = parseFloat(document.getElementById('fSL')?.value)  || 0;
+  const tp    = parseFloat(document.getElementById('fTP')?.value)  || 0;
+  const pair  = S.pair;
+
+  // Pip value per lot (standard lot = 100,000 units)
+  const isJPY = pair.includes('JPY');
+  const isXAU = pair.includes('XAU') || pair.includes('XAG');
+  const isCrypto = pair.includes('BTC') || pair.includes('ETH') || pair.includes('SOL');
+  const isIndex  = pair.includes('SPX') || pair.includes('NAS') || pair.includes('GER');
+
+  let pipSize, pipValuePerLot;
+  if (isJPY)    { pipSize = 0.01;   pipValuePerLot = 1000; }
+  else if (isXAU){ pipSize = 0.1;   pipValuePerLot = 100;  }
+  else if (isCrypto){ pipSize = 1;  pipValuePerLot = 1;    }
+  else if (isIndex) { pipSize = 1;  pipValuePerLot = 1;    }
+  else           { pipSize = 0.0001; pipValuePerLot = 10;  }
+
+  // Calculate actual risk/reward in dollars
+  const slDist = sl > 0 ? Math.abs(price - sl) : price * 0.003;
+  const tpDist = tp > 0 ? Math.abs(tp - price) : price * 0.006;
+
+  const riskDollar   = (slDist / pipSize) * pipValuePerLot * vol;
+  const rewardDollar = (tpDist / pipSize) * pipValuePerLot * vol;
+  const rr           = riskDollar > 0 ? rewardDollar / riskDollar : 0;
+
+  // Margin = (vol * contract_size * price) / leverage
+  const levNum   = parseInt((S.lev || '1:100').split(':')[1]) || 100;
+  const contractSize = isCrypto ? 1 : isIndex ? 1 : 100000;
+  const margin   = (vol * contractSize * price) / levNum;
+
+  document.getElementById('rbRisk').textContent    = '-$' + riskDollar.toFixed(2);
+  document.getElementById('rbReward').textContent  = '+$' + rewardDollar.toFixed(2);
+  document.getElementById('rbRR').textContent      = '1:' + rr.toFixed(2);
+  document.getElementById('rbMargin').textContent  = '$' + margin.toFixed(2);
+
+  // Color code R:R
+  const rrEl = document.getElementById('rbRR');
+  if (rrEl) rrEl.style.color = rr >= 2 ? 'var(--green)' : rr >= 1.5 ? 'var(--gold)' : 'var(--red)';
 }
 function execTrade(){
   const pair=S.pair,mode=S.mode,price=S.prices[S.pair]?.p.toFixed(5),vol=document.getElementById('fVol').value;
@@ -1726,37 +1838,123 @@ function switchRT(tab,el){
   if(tab==='bot') initBotPerfChart();
 }
 
-// ===== SIGNALS (SMALLER) =====
-const sigsData=[
-  {pair:'EUR/USD',dir:'buy',entry:'1.08350',tp:'1.08720',sl:'1.08140',conf:87,reason:'EMA تقاطع صاعد + RSI=58'},
-  {pair:'XAU/USD',dir:'buy',entry:'2940.00',tp:'2980.00',sl:'2920.00',conf:82,reason:'دعم قوي + MACD إيجابي'},
-  {pair:'GBP/USD',dir:'sell',entry:'1.27300',tp:'1.26850',sl:'1.27550',conf:78,reason:'مقاومة 1.2740 + RSI تباعد'},
-  {pair:'USD/JPY',dir:'buy',entry:'149.750',tp:'150.500',sl:'149.350',conf:74,reason:'دعم + بيانات اقتصادية قوية'},
-  {pair:'BTC/USD',dir:'buy',entry:'83800',tp:'87500',sl:'82000',conf:71,reason:'اختراق 84000 + حجم مرتفع'},
+// ===== SIGNALS — Dynamic from live indicators =====
+function generateSignals(){
+  const pairs=['EUR/USD','XAU/USD','GBP/USD','USD/JPY','BTC/USD'];
+  const signals=[];
+  pairs.forEach(pair=>{
+    const info=S.prices[pair]; if(!info) return;
+    // Build mini candle array for this pair from current price + small history
+    const closes=ST.candles.length>=50
+      ? (pair===S.pair ? ST.candles.map(c=>c.c) : (() => {
+          // For non-active pairs, synthesize from current price
+          const arr=[]; let p=info.p*(0.98+Math.random()*0.04);
+          for(let i=60;i>=0;i--){p+=((Math.random()-0.48)*info.p*0.0005);arr.push(p);}
+          arr.push(info.p); return arr;
+        })())
+      : [info.p];
+
+    if(closes.length<15) return;
+
+    // Calculate real indicators
+    const rsiArr  = CH_rsi(closes,14);
+    const rsi     = rsiArr.filter(v=>v!==null).pop() || 50;
+    const macdRes = CH_macd(closes);
+    const macdLast  = macdRes.m[macdRes.m.length-1] || 0;
+    const sigLast   = macdRes.s[macdRes.s.length-1] || 0;
+    const macdHist  = macdRes.h[macdRes.h.length-1] || 0;
+    const macdPrev  = macdRes.h[macdRes.h.length-2] || 0;
+    const ema20arr  = CH_ema(closes,20);
+    const ema50arr  = CH_ema(closes,50);
+    const ema20     = ema20arr[ema20arr.length-1];
+    const ema50     = ema50arr[ema50arr.length-1];
+    const price     = info.p;
+    const dp        = info.d;
+
+    // Scoring system — each condition adds to buy or sell score
+    let buyScore=0, sellScore=0;
+    const reasons=[];
+
+    if(rsi<35){buyScore+=30; reasons.push(`RSI=${rsi.toFixed(0)} تشبع بيع`);}
+    else if(rsi>65){sellScore+=30; reasons.push(`RSI=${rsi.toFixed(0)} تشبع شراء`);}
+    else if(rsi>50&&rsi<65){buyScore+=10; reasons.push(`RSI=${rsi.toFixed(0)} صاعد`);}
+    else if(rsi<50&&rsi>35){sellScore+=10; reasons.push(`RSI=${rsi.toFixed(0)} هابط`);}
+
+    if(macdLast>sigLast && macdHist>0 && macdPrev<0){buyScore+=35; reasons.push('MACD تقاطع صاعد');}
+    else if(macdLast<sigLast && macdHist<0 && macdPrev>0){sellScore+=35; reasons.push('MACD تقاطع هابط');}
+    else if(macdHist>macdPrev){buyScore+=15; reasons.push('MACD إيجابي');}
+    else if(macdHist<macdPrev){sellScore+=15; reasons.push('MACD سلبي');}
+
+    if(price>ema20&&ema20>ema50){buyScore+=20; reasons.push('فوق EMA صاعد');}
+    else if(price<ema20&&ema20<ema50){sellScore+=20; reasons.push('تحت EMA هابط');}
+
+    const totalScore=buyScore+sellScore;
+    if(totalScore<20) return; // No clear signal
+
+    const dir    = buyScore>sellScore ? 'buy' : 'sell';
+    const conf   = Math.min(95, Math.round(Math.max(buyScore,sellScore)/totalScore*100));
+    if(conf<55) return; // Weak signal, skip
+
+    const isJPY  = pair.includes('JPY');
+    const pip    = isJPY?0.01:pair.includes('XAU')?0.5:pair.includes('BTC')?50:0.0005;
+    const sl_dist= pip*(isJPY?30:pair.includes('BTC')?20:30);
+    const tp_dist= sl_dist*1.8;
+    const entry  = price.toFixed(dp);
+    const sl     = dir==='buy' ? (price-sl_dist).toFixed(dp) : (price+sl_dist).toFixed(dp);
+    const tp     = dir==='buy' ? (price+tp_dist).toFixed(dp) : (price-tp_dist).toFixed(dp);
+
+    signals.push({pair,dir,entry,tp,sl,conf,
+      reason: reasons.slice(0,2).join(' + ')});
+  });
+
+  // Sort by confidence
+  signals.sort((a,b)=>b.conf-a.conf);
+  return signals.length ? signals : sigsDataFallback;
+}
+
+// Static fallback if not enough candle data yet
+const sigsDataFallback=[
+  {pair:'EUR/USD',dir:'buy',entry:'—',tp:'—',sl:'—',conf:72,reason:'جارٍ تحليل المؤشرات...'},
 ];
+
 function renderSignals(){
-  document.getElementById('sigContainer').innerHTML=sigsData.map(s=>{
-    const cc=s.conf>=85?'var(--green)':s.conf>=70?'var(--gold)':'var(--red)';
-    const dirBg=s.dir==='buy'?'rgba(0,255,136,.12)':'rgba(255,51,102,.12)';
-    const dirCol=s.dir==='buy'?'var(--green)':'var(--red)';
-    return `<div class="signal-mini ${s.dir==='buy'?'sig-buy-line':'sig-sell-line'}">
+  const sigs=generateSignals();
+  const cc=c=>c>=85?'var(--green)':c>=70?'var(--gold)':'var(--red)';
+  const dBg=d=>d==='buy'?'rgba(0,255,136,.12)':'rgba(255,51,102,.12)';
+  const dC=d=>d==='buy'?'var(--green)':'var(--red)';
+
+  document.getElementById('sigContainer').innerHTML=
+    `<div style="font-size:9px;color:var(--text4);font-family:var(--font-mono);margin-bottom:8px;text-align:center">
+      محدّثة تلقائياً من RSI + MACD + EMA
+      <span id="sigUpdateTime" style="color:var(--text4)"></span>
+    </div>`+
+    sigs.map(s=>`
+    <div class="signal-mini ${s.dir==='buy'?'sig-buy-line':'sig-sell-line'}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-family:var(--font-hud);font-size:11px;font-weight:700;color:var(--text)">${s.pair}</span>
-        <span style="padding:2px 8px;border-radius:3px;font-size:9px;font-weight:900;font-family:var(--font-hud);background:${dirBg};color:${dirCol};border:1px solid ${dirCol}40">${s.dir==='buy'?'▲ BUY':'▼ SELL'}</span>
+        <span style="font-family:var(--font-hud);font-size:11px;font-weight:700">${s.pair}</span>
+        <span style="padding:2px 8px;border-radius:3px;font-size:9px;font-weight:900;font-family:var(--font-hud);background:${dBg(s.dir)};color:${dC(s.dir)};border:1px solid ${dC(s.dir)}40">${s.dir==='buy'?'▲ BUY':'▼ SELL'}</span>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:9px;font-family:var(--font-mono);margin-bottom:4px">
         <span style="color:var(--text3)">E:<b style="color:var(--text)">${s.entry}</b></span>
-        <span class="sm-tp">TP:${s.tp}</span>
-        <span class="sm-sl">SL:${s.sl}</span>
+        <span style="color:var(--green)">TP:${s.tp}</span>
+        <span style="color:var(--red)">SL:${s.sl}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:5px">
-        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:${s.conf}%;background:${cc};border-radius:2px"></div></div>
-        <span style="font-size:9px;font-family:var(--font-mono);font-weight:700;color:${cc}">${s.conf}%</span>
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="height:100%;width:${s.conf}%;background:${cc(s.conf)};border-radius:2px;transition:width .5s"></div>
+        </div>
+        <span style="font-size:9px;font-family:var(--font-mono);font-weight:700;color:${cc(s.conf)}">${s.conf}%</span>
       </div>
-      <div style="font-size:9px;color:var(--text3);margin-top:4px;line-height:1.4">${s.reason}</div>
-    </div>`;}).join('');
+      <div style="font-size:9px;color:var(--text3);line-height:1.4">${s.reason}</div>
+    </div>`).join('');
+
+  const el=document.getElementById('sigUpdateTime');
+  if(el){const n=new Date();el.textContent=` — ${n.getHours()}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;}
 }
-function refreshSigs(){document.getElementById('sigContainer').innerHTML=`<div class="ai-loading"><div class="think-dots"><span></span><span></span><span></span></div><span>${LANG==='ar'?'تحديث الإشارات...':'Refreshing signals...'}</span></div>`;setTimeout(renderSignals,1500);}
+function refreshSigs(){
+  document.getElementById('sigContainer').innerHTML=`<div class="ai-loading" style="padding:20px;justify-content:center;display:flex;gap:8px;align-items:center"><div class="think-dots"><span></span><span></span><span></span></div><span style="font-size:11px;color:var(--text3)">${LANG==='ar'?'تحليل المؤشرات...':'Analyzing...'}</span></div>`;
+  setTimeout(renderSignals,800);
+}
 
 // ===== BOT =====
 function switchBotTab(tab,el){
@@ -2100,6 +2298,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // Live ticks
   setInterval(()=>{ tickPrices(); renderOPP(); },2000);
+
+  // Signals auto-refresh every 30s from live indicators
+  setInterval(renderSignals, 30000);
 
   // Alert check every 15s
   setInterval(()=>checkAlerts(S.pair), 15000);

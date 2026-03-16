@@ -1,0 +1,7 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "deploy": {
+    "startCommand": "npx serve@14 . --listen $PORT --single",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
