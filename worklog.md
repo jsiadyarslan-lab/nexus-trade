@@ -31,3 +31,27 @@ Stage Summary:
 - Files modified: nexus-trade-full.html, index.html, css/styles.css
 - Changes committed locally in nexus-trade repo but NOT pushed to GitHub
 - User needs to push changes manually or provide GitHub credentials
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix mobile navbar height and page height regressions
+
+Work Log:
+- Analyzed all mobile layout files: layout.tsx, MobileNavBar.tsx, chart/page.tsx, trading/page.tsx, bot/page.tsx, markets/page.tsx, positions/page.tsx, agent/page.tsx, signals/page.tsx
+- Identified MobileNavBar base height (60px) was too tall, reduced to 54px
+- Reduced nav icon sizes from 18 to 16, font sizes from 8 to 7
+- Reduced center wallet button from 50px to 46px, marginTop from -20 to -16
+- Updated layout main paddingBottom from calc(68px + safe-area) to calc(62px + safe-area) 
+- Updated chart page and trading page height calculations from 68px to 62px
+- Fixed bot, positions, agent, signals pages: added env(safe-area-inset-top) to header padding
+- Reduced home page and markets page header padding for tighter layout
+- All pages now consistently handle safe-area-inset-top with fallback 20px
+- Committed and pushed to GitHub (37222d7)
+- Build verified successfully
+
+Stage Summary:
+- MobileNavBar is now more compact (54px base vs 60px)
+- Page height calculations updated consistently across chart, trading, and layout
+- All page headers now properly account for safe-area-inset-top
+- Build passes successfully, Railway deployment triggered
